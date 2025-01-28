@@ -6,16 +6,22 @@
   "scripts": {
     "start": "vite",
     "dev": "vite",
-    "build": "vite build",
+    "build": "CI=false vite build",
     "preview": "vite preview"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "dependencies": {
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
     "@heroicons/react": "^2.0.18",
+    "@mui/material": "^5.15.3",
     "@stripe/stripe-js": "^2.4.0",
     "@supabase/supabase-js": "^2.39.3",
-    "pdfjs-dist": "^3.11.174",
     "i18next": "^23.7.16",
     "i18next-browser-languagedetector": "^7.2.0",
+    "pdfjs-dist": "^3.11.174",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-helmet-async": "^2.0.4",

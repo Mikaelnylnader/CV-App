@@ -1,26 +1,24 @@
 {
-  "rewrites": [
+  "version": 2,
+  "builds": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist",
+        "installCommand": "npm install --no-audit --no-fund --registry=https://registry.npmjs.org/"
+      }
     }
   ],
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "framework": "vite",
-  "headers": [
+  "routes": [
     {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "Cross-Origin-Embedder-Policy",
-          "value": "credentialless"
-        },
-        {
-          "key": "Cross-Origin-Opener-Policy",
-          "value": "same-origin"
-        }
-      ]
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
-  ]
+  ],
+  "env": {
+    "VITE_SUPABASE_URL": "https://dhwmktvipzlverocznnt.supabase.co",
+    "VITE_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRod21rdHZpcHpsdmVyb2N6bm50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzYxNjQ1MjAsImV4cCI6MjA1MTc0MDUyMH0.RWgctzI4u0ZZFKh9EzBcn57GeNvEWRTnrfEvZtlXTUc",
+    "NPM_RC": "//registry.npmjs.org/:_authToken= \nregistry=https://registry.npmjs.org/\nalways-auth=false"
+  }
 } 

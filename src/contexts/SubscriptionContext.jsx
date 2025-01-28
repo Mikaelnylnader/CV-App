@@ -8,17 +8,18 @@ export const PLANS = {
   FREE: 'free',
   PRO: 'pro',
   LIFETIME: 'lifetime',
-  ADMIN: 'admin'  // Add admin plan type
+  ADMIN: 'admin'
 };
 
+// Make all features available in FREE plan for now
 export const PLAN_LIMITS = {
   [PLANS.FREE]: {
-    resumeCustomizations: 3,
-    features: ['basic_ai', 'pdf_export', 'email_support', 'standard_templates']
+    resumeCustomizations: Infinity,
+    features: ['advanced_ai', 'all_exports', 'priority_support', 'premium_templates', 'linkedin', 'cover_letter', 'job_matching', 'custom_branding', 'api_access', 'success_manager', 'analytics']
   },
   [PLANS.PRO]: {
     resumeCustomizations: Infinity,
-    features: ['advanced_ai', 'all_exports', 'priority_support', 'premium_templates', 'linkedin', 'cover_letter', 'job_matching']
+    features: ['advanced_ai', 'all_exports', 'priority_support', 'premium_templates', 'linkedin', 'cover_letter', 'job_matching', 'custom_branding', 'api_access', 'success_manager', 'analytics']
   },
   [PLANS.LIFETIME]: {
     resumeCustomizations: Infinity,
@@ -52,8 +53,8 @@ const BETA_TESTER_EMAILS = [
 
 export function SubscriptionProvider({ children }) {
   const { user } = useAuth();
-  const [subscription, setSubscription] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [subscription, setSubscription] = useState({ plan: PLANS.FREE });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -121,30 +122,12 @@ export function SubscriptionProvider({ children }) {
   };
 
   const checkPermission = (feature) => {
-    if (!subscription) return false;
-    return PLAN_LIMITS[subscription.plan].features.includes(feature);
+    // Always return true for now to make all features free
+    return true;
   };
 
   const getRemainingCustomizations = async () => {
-    // Admin users have unlimited customizations
-    if (subscription?.plan === PLANS.ADMIN) {
-      return Infinity;
-    }
-
-    if (subscription?.plan === PLANS.FREE) {
-      try {
-        const { count, error } = await supabase
-          .from('resumes')
-          .select('*', { count: 'exact' })
-          .eq('user_id', user.id);
-
-        if (error) throw error;
-        return PLAN_LIMITS[PLANS.FREE].resumeCustomizations - count;
-      } catch (error) {
-        console.error('Error checking customizations:', error);
-        return 0;
-      }
-    }
+    // Return Infinity to allow unlimited customizations
     return Infinity;
   };
 
@@ -155,7 +138,7 @@ export function SubscriptionProvider({ children }) {
       checkPermission,
       getRemainingCustomizations,
       planLimits: PLAN_LIMITS,
-      isAdmin: user && ADMIN_EMAILS.includes(user.email)
+      isAdmin: true // Make everyone admin for now
     }}>
       {children}
     </SubscriptionContext.Provider>
