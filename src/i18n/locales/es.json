@@ -1,0 +1,99 @@
+{
+  "common": {
+    "signIn": "Iniciar Sesión",
+    "signUp": "Registrarse",
+    "signOut": "Cerrar Sesión",
+    "dashboard": "Panel",
+    "features": "Características",
+    "howItWorks": "Cómo Funciona",
+    "pricing": "Precios",
+    "myResumes": "Mis Currículums",
+    "settings": "Ajustes"
+  },
+  "hero": {
+    "title": "Consigue el Trabajo de tus Sueños con",
+    "subtitle": "Currículums Optimizados por IA",
+    "description": "Transforma tu currículum al instante con IA que adapta tu experiencia a cada descripción del trabajo",
+    "cta": "Pruébalo Ahora"
+  },
+  "features": {
+    "title": "Características",
+    "subtitle": "Todo lo que necesitas para conseguir el trabajo de tus sueños",
+    "instantCustomization": {
+      "title": "Personalización Instantánea",
+      "description": "Obtén un currículum personalizado en segundos, perfectamente adaptado a la descripción del trabajo."
+    },
+    "timeSaving": {
+      "title": "Ahorro de Tiempo",
+      "description": "Deja de pasar horas ajustando tu currículum. Nuestra IA hace el trabajo pesado por ti."
+    },
+    "atsOptimization": {
+      "title": "Optimización ATS",
+      "description": "Asegúrate de que tu currículum pase los sistemas de seguimiento de candidatos con palabras clave y formato optimizados."
+    },
+    "smartHighlights": {
+      "title": "Destacados Inteligentes",
+      "description": "La IA enfatiza automáticamente tus experiencias más relevantes para cada solicitud."
+    }
+  },
+  "howItWorks": {
+    "title": "Cómo Funciona",
+    "subtitle": "Tres pasos simples hacia tu currículum perfecto",
+    "steps": {
+      "upload": {
+        "title": "Sube tu Currículum",
+        "description": "Comienza subiendo tu currículum existente en cualquier formato común."
+      },
+      "jobLink": {
+        "title": "Añade el Enlace del Trabajo",
+        "description": "Pega la URL de la oferta de trabajo de LinkedIn a la que quieres aplicar."
+      },
+      "getResume": {
+        "title": "Obtén tu Currículum Personalizado",
+        "description": "Recibe tu currículum optimizado para el trabajo específico en segundos."
+      }
+    }
+  },
+  "pricing": {
+    "title": "Precios Simples y Transparentes",
+    "subtitle": "Sin costos ocultos. Cancela cuando quieras.",
+    "basic": {
+      "name": "Básico",
+      "price": "9,99",
+      "features": [
+        "5 Personalizaciones de Currículum",
+        "Optimización IA Básica",
+        "Exportación PDF",
+        "Soporte por Email"
+      ]
+    },
+    "pro": {
+      "name": "Pro",
+      "price": "19,99",
+      "features": [
+        "Personalizaciones Ilimitadas",
+        "Optimización IA Avanzada",
+        "Todos los Formatos de Exportación",
+        "Soporte Prioritario",
+        "Integración con LinkedIn"
+      ],
+      "popular": "Más Popular"
+    },
+    "cta": "Comenzar"
+  },
+  "upload": {
+    "title": "Crear Nuevo Currículum Optimizado",
+    "uploadResume": "Subir Currículum",
+    "dragDrop": "o arrastra y suelta",
+    "fileTypes": "PDF, DOC, DOCX hasta 10MB",
+    "jobUrl": "URL del Trabajo",
+    "optimize": "Optimizar Currículum",
+    "processing": "Procesando..."
+  },
+  "dashboard": {
+    "title": "Panel",
+    "recentResumes": "Currículums Recientes",
+    "createNew": "Crear Nuevo Currículum",
+    "noResumes": "Aún no hay currículums. ¡Sube tu primer currículum para empezar!"
+  }
+}

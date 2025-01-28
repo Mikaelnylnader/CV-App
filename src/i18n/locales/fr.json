@@ -1,0 +1,99 @@
+{
+  "common": {
+    "signIn": "Se Connecter",
+    "signUp": "S'inscrire",
+    "signOut": "Se Déconnecter",
+    "dashboard": "Tableau de Bord",
+    "features": "Fonctionnalités",
+    "howItWorks": "Comment ça Marche",
+    "pricing": "Tarifs",
+    "myResumes": "Mes CV",
+    "settings": "Paramètres"
+  },
+  "hero": {
+    "title": "Décrochez le Job de vos Rêves avec",
+    "subtitle": "des CV Optimisés par l'IA",
+    "description": "Transformez instantanément votre CV avec l'IA qui adapte votre expérience à chaque offre d'emploi",
+    "cta": "Essayer Maintenant"
+  },
+  "features": {
+    "title": "Fonctionnalités",
+    "subtitle": "Tout ce dont vous avez besoin pour décrocher votre job de rêve",
+    "instantCustomization": {
+      "title": "Personnalisation Instantanée",
+      "description": "Obtenez un CV personnalisé en quelques secondes, parfaitement adapté à l'offre d'emploi ciblée."
+    },
+    "timeSaving": {
+      "title": "Gain de Temps",
+      "description": "Arrêtez de passer des heures à modifier votre CV. Notre IA fait le travail pour vous."
+    },
+    "atsOptimization": {
+      "title": "Optimisation ATS",
+      "description": "Assurez-vous que votre CV passe les systèmes de suivi des candidatures avec des mots-clés et une mise en forme optimisés."
+    },
+    "smartHighlights": {
+      "title": "Points Forts Intelligents",
+      "description": "L'IA met automatiquement en avant vos expériences les plus pertinentes pour chaque candidature."
+    }
+  },
+  "howItWorks": {
+    "title": "Comment ça Marche",
+    "subtitle": "Trois étapes simples vers votre CV parfait",
+    "steps": {
+      "upload": {
+        "title": "Téléchargez votre CV",
+        "description": "Commencez par télécharger votre CV existant dans n'importe quel format courant."
+      },
+      "jobLink": {
+        "title": "Ajoutez le Lien de l'Offre",
+        "description": "Collez l'URL de l'offre d'emploi LinkedIn pour laquelle vous souhaitez postuler."
+      },
+      "getResume": {
+        "title": "Obtenez votre CV Personnalisé",
+        "description": "Recevez votre CV optimisé pour le poste spécifique en quelques secondes."
+      }
+    }
+  },
+  "pricing": {
+    "title": "Prix Simples et Transparents",
+    "subtitle": "Pas de frais cachés. Annulez à tout moment.",
+    "basic": {
+      "name": "Basique",
+      "price": "9,99",
+      "features": [
+        "5 Personnalisations de CV",
+        "Optimisation IA Basique",
+        "Export PDF",
+        "Support par Email"
+      ]
+    },
+    "pro": {
+      "name": "Pro",
+      "price": "19,99",
+      "features": [
+        "Personnalisations Illimitées",
+        "Optimisation IA Avancée",
+        "Tous les Formats d'Export",
+        "Support Prioritaire",
+        "Intégration LinkedIn"
+      ],
+      "popular": "Le Plus Populaire"
+    },
+    "cta": "Commencer"
+  },
+  "upload": {
+    "title": "Créer un Nouveau CV Optimisé",
+    "uploadResume": "Télécharger CV",
+    "dragDrop": "ou glisser-déposer",
+    "fileTypes": "PDF, DOC, DOCX jusqu'à 10MB",
+    "jobUrl": "URL de l'Offre",
+    "optimize": "Optimiser le CV",
+    "processing": "Traitement en cours..."
+  },
+  "dashboard": {
+    "title": "Tableau de Bord",
+    "recentResumes": "CV Récents",
+    "createNew": "Créer un Nouveau CV",
+    "noResumes": "Pas encore de CV. Téléchargez votre premier CV pour commencer !"
+  }
+}

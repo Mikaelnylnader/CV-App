@@ -1,0 +1,99 @@
+{
+  "common": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "dashboard": "Dashboard",
+    "features": "Features",
+    "howItWorks": "How it Works",
+    "pricing": "Pricing",
+    "myResumes": "My Resumes",
+    "settings": "Settings"
+  },
+  "hero": {
+    "title": "Land Your Dream Job with",
+    "subtitle": "AI-Powered Resumes",
+    "description": "Transform your resume instantly with AI that tailors your experience to match any job description",
+    "cta": "Try It Now"
+  },
+  "features": {
+    "title": "Features",
+    "subtitle": "Everything you need to land your dream job",
+    "instantCustomization": {
+      "title": "Instant Customization",
+      "description": "Get a tailored resume in seconds, perfectly matched to your target job description."
+    },
+    "timeSaving": {
+      "title": "Time Saving",
+      "description": "Stop spending hours tweaking your resume. Our AI does the heavy lifting for you."
+    },
+    "atsOptimization": {
+      "title": "ATS Optimization",
+      "description": "Ensure your resume passes Applicant Tracking Systems with optimized keywords and formatting."
+    },
+    "smartHighlights": {
+      "title": "Smart Highlights",
+      "description": "AI automatically emphasizes your most relevant experiences for each application."
+    }
+  },
+  "howItWorks": {
+    "title": "How It Works",
+    "subtitle": "Three simple steps to your perfect resume",
+    "steps": {
+      "upload": {
+        "title": "Upload Your Resume",
+        "description": "Start by uploading your existing resume in any common format."
+      },
+      "jobLink": {
+        "title": "Add Job Link",
+        "description": "Paste the LinkedIn job posting URL you want to apply for."
+      },
+      "getResume": {
+        "title": "Get Your Customized Resume",
+        "description": "Receive your tailored resume optimized for the specific job in seconds."
+      }
+    }
+  },
+  "pricing": {
+    "title": "Simple, Transparent Pricing",
+    "subtitle": "No hidden fees. Cancel anytime.",
+    "basic": {
+      "name": "Basic",
+      "price": "9.99",
+      "features": [
+        "5 Resume Customizations",
+        "Basic AI Optimization",
+        "PDF Export",
+        "Email Support"
+      ]
+    },
+    "pro": {
+      "name": "Pro",
+      "price": "19.99",
+      "features": [
+        "Unlimited Customizations",
+        "Advanced AI Optimization",
+        "All Export Formats",
+        "Priority Support",
+        "LinkedIn Integration"
+      ],
+      "popular": "Most Popular"
+    },
+    "cta": "Get Started"
+  },
+  "upload": {
+    "title": "Create New Optimized Resume",
+    "uploadResume": "Upload Resume",
+    "dragDrop": "or drag and drop",
+    "fileTypes": "PDF, DOC, DOCX up to 10MB",
+    "jobUrl": "Job URL",
+    "optimize": "Optimize Resume",
+    "processing": "Processing..."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "recentResumes": "Recent Resumes",
+    "createNew": "Create New Resume",
+    "noResumes": "No resumes yet. Upload your first resume to get started!"
+  }
+}

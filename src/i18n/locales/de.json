@@ -1,0 +1,99 @@
+{
+  "common": {
+    "signIn": "Anmelden",
+    "signUp": "Registrieren",
+    "signOut": "Abmelden",
+    "dashboard": "Dashboard",
+    "features": "Funktionen",
+    "howItWorks": "Wie es funktioniert",
+    "pricing": "Preise",
+    "myResumes": "Meine Lebensläufe",
+    "settings": "Einstellungen"
+  },
+  "hero": {
+    "title": "Finden Sie Ihren Traumjob mit",
+    "subtitle": "KI-gestützten Lebensläufen",
+    "description": "Transformieren Sie Ihren Lebenslauf sofort mit KI, die Ihre Erfahrung an jede Stellenbeschreibung anpasst",
+    "cta": "Jetzt ausprobieren"
+  },
+  "features": {
+    "title": "Funktionen",
+    "subtitle": "Alles, was Sie brauchen, um Ihren Traumjob zu finden",
+    "instantCustomization": {
+      "title": "Sofortige Anpassung",
+      "description": "Erhalten Sie in Sekunden einen maßgeschneiderten Lebenslauf, der perfekt auf die Zielposition abgestimmt ist."
+    },
+    "timeSaving": {
+      "title": "Zeitersparnis",
+      "description": "Verbringen Sie keine Stunden mehr mit der Überarbeitung Ihres Lebenslaufs. Unsere KI übernimmt die schwere Arbeit."
+    },
+    "atsOptimization": {
+      "title": "ATS-Optimierung",
+      "description": "Stellen Sie sicher, dass Ihr Lebenslauf die Bewerbermanagementsysteme mit optimierten Schlüsselwörtern und Formatierung passiert."
+    },
+    "smartHighlights": {
+      "title": "Intelligente Hervorhebungen",
+      "description": "KI hebt automatisch Ihre relevantesten Erfahrungen für jede Bewerbung hervor."
+    }
+  },
+  "howItWorks": {
+    "title": "Wie es funktioniert",
+    "subtitle": "Drei einfache Schritte zu Ihrem perfekten Lebenslauf",
+    "steps": {
+      "upload": {
+        "title": "Lebenslauf hochladen",
+        "description": "Laden Sie Ihren bestehenden Lebenslauf in einem gängigen Format hoch."
+      },
+      "jobLink": {
+        "title": "Stellenlink hinzufügen",
+        "description": "Fügen Sie die URL der LinkedIn-Stellenanzeige ein, auf die Sie sich bewerben möchten."
+      },
+      "getResume": {
+        "title": "Erhalten Sie Ihren angepassten Lebenslauf",
+        "description": "Erhalten Sie in Sekunden Ihren optimierten Lebenslauf für die spezifische Stelle."
+      }
+    }
+  },
+  "pricing": {
+    "title": "Einfache, transparente Preise",
+    "subtitle": "Keine versteckten Gebühren. Jederzeit kündbar.",
+    "basic": {
+      "name": "Basic",
+      "price": "9,99",
+      "features": [
+        "5 Lebenslauf-Anpassungen",
+        "Basis KI-Optimierung",
+        "PDF-Export",
+        "E-Mail-Support"
+      ]
+    },
+    "pro": {
+      "name": "Pro",
+      "price": "19,99",
+      "features": [
+        "Unbegrenzte Anpassungen",
+        "Erweiterte KI-Optimierung",
+        "Alle Exportformate",
+        "Prioritäts-Support",
+        "LinkedIn-Integration"
+      ],
+      "popular": "Beliebteste Wahl"
+    },
+    "cta": "Jetzt starten"
+  },
+  "upload": {
+    "title": "Neuen optimierten Lebenslauf erstellen",
+    "uploadResume": "Lebenslauf hochladen",
+    "dragDrop": "oder per Drag & Drop",
+    "fileTypes": "PDF, DOC, DOCX bis zu 10MB",
+    "jobUrl": "Stellen-URL",
+    "optimize": "Lebenslauf optimieren",
+    "processing": "Wird verarbeitet..."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "recentResumes": "Aktuelle Lebensläufe",
+    "createNew": "Neuen Lebenslauf erstellen",
+    "noResumes": "Noch keine Lebensläufe. Laden Sie Ihren ersten Lebenslauf hoch, um zu beginnen!"
+  }
+}

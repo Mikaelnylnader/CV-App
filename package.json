@@ -1,0 +1,35 @@
+{
+  "name": "ai-resume-customizer",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@heroicons/react": "^2.0.18",
+    "@stripe/stripe-js": "^2.4.0",
+    "@supabase/supabase-js": "^2.39.3",
+    "pdfjs-dist": "^3.11.174",
+    "i18next": "^23.7.16",
+    "i18next-browser-languagedetector": "^7.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-helmet-async": "^2.0.4",
+    "react-i18next": "^14.0.0",
+    "react-router-dom": "^6.21.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.10",
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@vitejs/plugin-react": "^4.0.3",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.27",
+    "tailwindcss": "^3.3.3",
+    "vite": "^4.4.5"
+  }
+}
