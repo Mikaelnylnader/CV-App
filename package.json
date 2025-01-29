@@ -41,7 +41,9 @@
     "vite": "^4.5.9"
   },
   "resolutions": {
-    "@emotion/*": "https://registry.npmjs.org/@emotion/*",
-    "@babel/*": "https://registry.npmjs.org/@babel/*"
+    "@emotion/react": "11.11.3",
+    "@emotion/styled": "11.11.0",
+    "@emotion/babel-plugin": "11.11.0",
+    "@babel/core": "7.23.9"
   }
 }
