@@ -1,5 +1,5 @@
 [build]
-  command = "yarn cache clean && yarn install && yarn build"
+  command = "yarn config set registry https://registry.npmjs.org/ && yarn config set '@emotion:registry' https://registry.npmjs.org/ && yarn config set '@mui:registry' https://registry.npmjs.org/ && yarn config set '@babel:registry' https://registry.npmjs.org/ && yarn cache clean && yarn install && yarn build"
   publish = "dist"
 
 [build.environment]
