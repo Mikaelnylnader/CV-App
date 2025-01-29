@@ -39,5 +39,9 @@
     "postcss": "^8.4.27",
     "tailwindcss": "^3.3.3",
     "vite": "^4.5.9"
+  },
+  "resolutions": {
+    "@emotion/*": "https://registry.npmjs.org/@emotion/*",
+    "@babel/*": "https://registry.npmjs.org/@babel/*"
   }
 }
