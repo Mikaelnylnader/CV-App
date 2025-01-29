@@ -13,9 +13,6 @@
     "build": "vite build",
     "preview": "vite preview"
   },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
-  },
   "dependencies": {
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
