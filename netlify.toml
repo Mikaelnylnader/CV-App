@@ -1,7 +1,6 @@
 [build]
   command = "yarn cache clean && yarn install && yarn build"
   publish = "dist"
-  environment = { NODE_VERSION = "20.11.0", YARN_VERSION = "1.22.22" }
 
 [build.environment]
   NODE_VERSION = "20.11.0"
