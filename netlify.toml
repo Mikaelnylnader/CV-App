@@ -1,10 +1,11 @@
 [build]
-  command = "yarn config set registry https://registry.npmjs.org/ && yarn config set '@emotion:registry' https://registry.npmjs.org/ && yarn config set '@mui:registry' https://registry.npmjs.org/ && yarn config set '@babel:registry' https://registry.npmjs.org/ && yarn cache clean && yarn install && yarn build"
+  command = "yarn install && yarn build"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "20.11.0"
   YARN_VERSION = "1.22.22"
+  NPM_CONFIG_USERCONFIG = ".npmrc"
   YARN_FLAGS = "--network-timeout 1000000"
   VITE_SUPABASE_URL = "https://dhwmktvipzlverocznnt.supabase.co"
   VITE_MAKE_RESUME_WEBHOOK = "https://hook.eu2.make.com/ulkaozsur8jwqh7goavq2cflmj2yeiup"
