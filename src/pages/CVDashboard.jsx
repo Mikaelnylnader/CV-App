@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabaseClient';
 import { DocumentTextIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 import Sidebar from '../components/dashboard/Sidebar';
+import { emailService } from '../services/emailService';
 
 export default function CVDashboard() {
   const { user } = useAuth();
@@ -88,7 +89,7 @@ export default function CVDashboard() {
             table: 'resumes',
             filter: `user_id=eq.${user.id}`
           }, 
-          (payload) => {
+          async (payload) => {
             // Handle different change types
             switch (payload.eventType) {
               case 'INSERT':
@@ -98,6 +99,17 @@ export default function CVDashboard() {
                 setCVs(prev => prev.map(cv => 
                   cv.id === payload.new.id ? payload.new : cv
                 ));
+                // Send email notification when CV is completed
+                if (payload.new.status === 'completed' && payload.old.status !== 'completed') {
+                  try {
+                    await emailService.sendCVCompletionEmail(user, {
+                      originalFilename: payload.new.original_filename || 'Your CV',
+                      jobUrl: payload.new.job_url
+                    });
+                  } catch (error) {
+                    console.error('Failed to send CV completion email:', error);
+                  }
+                }
                 break;
               case 'DELETE':
                 setCVs(prev => prev.filter(cv => cv.id !== payload.old.id));
