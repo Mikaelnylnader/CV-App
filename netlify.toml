@@ -1,12 +1,21 @@
 [build]
-  command = "yarn install && yarn build"
+  command = """
+    rm -rf node_modules &&
+    rm -rf .yarn/cache &&
+    yarn config set npmRegistryServer https://registry.npmjs.org &&
+    yarn config set npmScopes.emotion.npmRegistryServer https://registry.npmjs.org &&
+    yarn config set npmScopes.mui.npmRegistryServer https://registry.npmjs.org &&
+    yarn config set npmScopes.babel.npmRegistryServer https://registry.npmjs.org &&
+    yarn install &&
+    yarn build
+  """
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "20.11.0"
   YARN_VERSION = "1.22.22"
-  NPM_CONFIG_USERCONFIG = ".npmrc"
-  YARN_FLAGS = "--network-timeout 1000000"
+  YARN_ENABLE_GLOBAL_CACHE = "false"
+  YARN_CACHE_FOLDER = ".yarn/cache"
   VITE_SUPABASE_URL = "https://dhwmktvipzlverocznnt.supabase.co"
   VITE_MAKE_RESUME_WEBHOOK = "https://hook.eu2.make.com/ulkaozsur8jwqh7goavq2cflmj2yeiup"
   VITE_MAKE_COVER_LETTER_WEBHOOK = "https://hook.eu2.make.com/br45evlruu19bzygyr1949ifx7dqcrsd"
