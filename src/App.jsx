@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { SubscriptionProvider } from './contexts/SubscriptionContext';
 import { HelmetProvider } from 'react-helmet-async';
@@ -33,6 +33,20 @@ import { testConnection } from './lib/supabaseClient';
 import ResumeFromUrl from './pages/ResumeFromUrl';
 import ResumeCoverLetterFromUrl from './pages/ResumeCoverLetterFromUrl';
 import ResumeToJobs from './pages/ResumeToJobs';
+import HelpCenter from './pages/HelpCenter';
+import TermsOfService from './pages/TermsOfService';
+import FAQ from './pages/FAQ';
+
+function PublicLayout() {
+  return (
+    <div className="min-h-screen flex flex-col">
+      <div className="flex-grow">
+        <Outlet />
+      </div>
+      <Footer />
+    </div>
+  );
+}
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
@@ -46,13 +60,13 @@ function PrivateRoute({ children }) {
 
 function LandingPage() {
   return (
-    <div className="min-h-screen">
+    <>
       <Hero />
       <Features />
       <HowItWorks />
       <Pricing />
       <Footer />
-    </div>
+    </>
   );
 }
 
@@ -68,93 +82,104 @@ export default function App() {
       <HelmetProvider>
         <AuthProvider>
           <SubscriptionProvider>
-            <Header />
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/:id" element={<BlogPost />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/cvs" element={
-                <PrivateRoute>
-                  <CVDashboard />
-                </PrivateRoute>
-              } />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/dashboard" element={
-                <PrivateRoute>
-                  <Dashboard />
-                </PrivateRoute>
-              } />
-              <Route path="/dashboard/upload" element={
-                <PrivateRoute>
-                  <div className="flex h-screen bg-gray-50">
-                    <Sidebar currentPage="Upload Resume" />
-                    <main className="flex-1 overflow-y-auto md:ml-16">
-                      <div className="py-8 px-4 sm:px-6 lg:px-8">
-                        <h1 className="text-2xl font-bold text-gray-900 mb-8">New Resume from URL</h1>
-                        <UploadSection />
-                        
-                        <div className="mt-12">
-                          <h2 className="text-xl font-bold text-gray-900 mb-6">Recent Activity</h2>
-                          <div className="bg-white rounded-lg shadow-sm p-6">
-                            <ResumeList />
+            <div className="min-h-screen">
+              <Header />
+              <Routes>
+                <Route path="/" element={<LandingPage />} />
+                
+                {/* Public routes with Footer */}
+                <Route element={<PublicLayout />}>
+                  <Route path="/blog" element={<Blog />} />
+                  <Route path="/blog/:id" element={<BlogPost />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/privacy" element={<Privacy />} />
+                  <Route path="/help" element={<HelpCenter />} />
+                  <Route path="/terms" element={<TermsOfService />} />
+                  <Route path="/faq" element={<FAQ />} />
+                  <Route path="/signup" element={<Signup />} />
+                </Route>
+
+                {/* Private routes */}
+                <Route path="/cvs" element={
+                  <PrivateRoute>
+                    <CVDashboard />
+                  </PrivateRoute>
+                } />
+                <Route path="/dashboard" element={
+                  <PrivateRoute>
+                    <Dashboard />
+                  </PrivateRoute>
+                } />
+                <Route path="/dashboard/upload" element={
+                  <PrivateRoute>
+                    <div className="flex h-screen bg-gray-50">
+                      <Sidebar currentPage="Upload Resume" />
+                      <main className="flex-1 overflow-y-auto md:ml-16">
+                        <div className="py-8 px-4 sm:px-6 lg:px-8">
+                          <h1 className="text-2xl font-bold text-gray-900 mb-8">New Resume from URL</h1>
+                          <UploadSection />
+                          
+                          <div className="mt-12">
+                            <h2 className="text-xl font-bold text-gray-900 mb-6">Recent Activity</h2>
+                            <div className="bg-white rounded-lg shadow-sm p-6">
+                              <ResumeList />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </main>
-                  </div>
-                </PrivateRoute>
-              } />
-              <Route path="/dashboard/cover-letter" element={
-                <PrivateRoute>
-                  <CoverLetterPage />
-                </PrivateRoute>
-              } />
-              <Route path="/dashboard/resume-from-url" element={
-                <PrivateRoute>
-                  <ResumeCoverLetterFromUrl />
-                </PrivateRoute>
-              } />
-              <Route path="/dashboard/cover-letter-from-cover-letter" element={
-                <PrivateRoute>
-                  <CoverLetterFromCoverLetter />
-                </PrivateRoute>
-              } />
-              <Route path="/dashboard/cover-letter-from-url" element={
-                <PrivateRoute>
-                  <ResumeToJobs />
-                </PrivateRoute>
-              } />
-              <Route path="/settings" element={
-                <PrivateRoute>
-                  <Settings />
-                </PrivateRoute>
-              } />
-              <Route path="/resumes" element={
-                <PrivateRoute>
-                  <ResumesView />
-                </PrivateRoute>
-              } />
-              <Route path="/resumes/edit/:id" element={
-                <PrivateRoute>
-                  <EditResume />
-                </PrivateRoute>
-              } />
-              <Route path="/resources" element={
-                <PrivateRoute>
-                  <CareerResources />
-                </PrivateRoute>
-              } />
-              <Route path="/admin/blog" element={
-                <PrivateRoute>
-                  <AdminBlog />
-                </PrivateRoute>
-              } />
-            </Routes>
-            {user && <ChatBot />}
+                      </main>
+                    </div>
+                  </PrivateRoute>
+                } />
+                <Route path="/dashboard/cover-letter" element={
+                  <PrivateRoute>
+                    <CoverLetterPage />
+                  </PrivateRoute>
+                } />
+                <Route path="/dashboard/resume-from-url" element={
+                  <PrivateRoute>
+                    <ResumeCoverLetterFromUrl />
+                  </PrivateRoute>
+                } />
+                <Route path="/dashboard/cover-letter-from-cover-letter" element={
+                  <PrivateRoute>
+                    <CoverLetterFromCoverLetter />
+                  </PrivateRoute>
+                } />
+                <Route path="/dashboard/cover-letter-from-url" element={
+                  <PrivateRoute>
+                    <ResumeToJobs />
+                  </PrivateRoute>
+                } />
+                <Route path="/settings" element={
+                  <PrivateRoute>
+                    <Settings />
+                  </PrivateRoute>
+                } />
+                <Route path="/resumes" element={
+                  <PrivateRoute>
+                    <ResumesView />
+                  </PrivateRoute>
+                } />
+                <Route path="/resumes/edit/:id" element={
+                  <PrivateRoute>
+                    <EditResume />
+                  </PrivateRoute>
+                } />
+                <Route path="/resources" element={
+                  <PrivateRoute>
+                    <CareerResources />
+                  </PrivateRoute>
+                } />
+                <Route path="/admin/blog" element={
+                  <PrivateRoute>
+                    <AdminBlog />
+                  </PrivateRoute>
+                } />
+              </Routes>
+              {user && <ChatBot />}
+            </div>
           </SubscriptionProvider>
         </AuthProvider>
       </HelmetProvider>

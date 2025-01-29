@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
+import { emailService } from '../services/emailService';
 
 export default function Signup() {
   const [name, setName] = useState('');
@@ -53,6 +54,17 @@ export default function Signup() {
       }
 
       if (data?.user) {
+        // Send welcome email
+        try {
+          await emailService.sendWelcomeEmail({
+            name: name.trim(),
+            email: email.trim()
+          });
+        } catch (emailError) {
+          console.error('Error sending welcome email:', emailError);
+          // Don't block signup if email fails
+        }
+
         navigate('/dashboard');
       } else {
         throw new Error('Signup failed. Please try again.');

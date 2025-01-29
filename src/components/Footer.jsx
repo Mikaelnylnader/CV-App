@@ -2,6 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 export default function Footer() {
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
   return (
     <footer className="bg-gray-900 text-gray-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -58,9 +65,21 @@ export default function Footer() {
           <div>
             <h4 className="text-white font-semibold mb-4">Support</h4>
             <ul className="space-y-2 text-sm">
-              <li>Help Center</li>
-              <li>Terms of Service</li>
-              <li>FAQ</li>
+              <li>
+                <Link to="/help" className="hover:text-blue-400 transition-colors" onClick={scrollToTop}>
+                  Help Center
+                </Link>
+              </li>
+              <li>
+                <Link to="/terms" className="hover:text-blue-400 transition-colors" onClick={scrollToTop}>
+                  Terms of Service
+                </Link>
+              </li>
+              <li>
+                <Link to="/faq" className="hover:text-blue-400 transition-colors" onClick={scrollToTop}>
+                  FAQ
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

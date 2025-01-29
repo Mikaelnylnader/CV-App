@@ -1,13 +1,23 @@
 [build]
-  command = "yarn install && yarn build"
+  command = "npm install && npm run build"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "20.11.0"
   YARN_VERSION = "1.22.22"
-  YARN_FLAGS = "--no-lockfile --non-interactive"
+  VITE_SUPABASE_URL = "https://dhwmktvipzlverocznnt.supabase.co"
+  VITE_MAKE_RESUME_WEBHOOK = "https://hook.eu2.make.com/ulkaozsur8jwqh7goavq2cflmj2yeiup"
+  VITE_MAKE_COVER_LETTER_WEBHOOK = "https://hook.eu2.make.com/br45evlruu19bzygyr1949ifx7dqcrsd"
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
-  status = 200 
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin" 

@@ -13,6 +13,7 @@ import {
 import Sidebar from '../components/dashboard/Sidebar';
 import ResumeList from '../components/dashboard/ResumeList';
 import CoverLetterList from '../components/dashboard/CoverLetterList';
+import { emailService } from '../services/emailService';
 
 export default function Dashboard() {
   const { t } = useTranslation();

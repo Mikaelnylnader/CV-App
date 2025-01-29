@@ -18,7 +18,12 @@ export default defineConfig({
       'Cross-Origin-Embedder-Policy': 'credentialless',
       'Cross-Origin-Opener-Policy': 'same-origin',
       'Access-Control-Allow-Origin': '*'
-    }
+    },
+    port: 5174,
+    strictPort: true
   },
   base: '/',
+  define: {
+    'process.env': {}
+  }
 })
