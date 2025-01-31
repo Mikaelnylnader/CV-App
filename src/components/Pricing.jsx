@@ -23,10 +23,12 @@ export default function Pricing() {
       },
       features: [
         '3 Resume Customizations',
-        'Basic AI Optimization',
+        'Basic AI Resume Optimization',
         'PDF Export',
-        'Email Support',
-        'Standard Templates'
+        'Standard Templates',
+        'Basic Email Support',
+        'Basic Job Tracker (Track up to 5 applications)',
+        'Basic Career Resources'
       ],
       cta: 'Get Started',
       popular: false
@@ -44,13 +46,17 @@ export default function Pricing() {
       },
       features: [
         'Unlimited Resume Customizations',
-        'Advanced AI Optimization',
+        'Advanced AI Resume Optimization',
         'All Export Formats',
-        'Priority Support',
         'Premium Templates',
-        'LinkedIn Integration',
+        'Priority Support',
+        'LinkedIn Profile Optimization',
         'Cover Letter Generator',
-        'Job Matching'
+        'Advanced Job Tracker (Unlimited applications)',
+        'Interview Preparation Tools',
+        'Career Planning Tools',
+        'Network Growth Tools',
+        'Basic Personal Branding'
       ],
       cta: 'Start Pro',
       popular: true
@@ -64,14 +70,18 @@ export default function Pricing() {
         lifetime: '499.99'
       },
       features: [
-        'Everything in Pro plan',
+        'Everything in Pro Plan',
         'Lifetime Access',
-        'Future Updates',
+        'Advanced Interview Preparation',
+        'Salary Negotiation Tools',
+        'Complete Personal Branding Suite',
         'VIP Support',
-        'Custom Branding',
+        'Custom Branding Options',
         'API Access',
         'Personal Success Manager',
-        'Resume Analytics'
+        'Resume Analytics',
+        'Priority Feature Updates',
+        'Exclusive Career Resources'
       ],
       cta: 'Get Lifetime Access',
       popular: false
@@ -124,35 +134,54 @@ export default function Pricing() {
   };
 
   return (
-    <div id="pricing" className="bg-gray-900 py-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-white mb-4">Simple, Transparent Pricing</h2>
-          <p className="text-xl text-gray-400 mb-8">No hidden fees. Cancel anytime.</p>
-          
-          {/* Billing Toggle */}
-          <div className="flex items-center justify-center mb-12">
-            <span className={`text-sm ${isYearly ? 'text-gray-400' : 'text-white'}`}>Monthly</span>
+    <div id="pricing" className="relative overflow-hidden bg-gradient-to-br from-[#020617] via-[#0B1120] to-[#1e3a8a] py-24">
+      {/* Background overlay with subtle texture */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.03)_0%,_rgba(255,255,255,0)_100%)]" />
+      
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-white sm:text-4xl">
+            {t('pricing.title')}
+          </h2>
+          <p className="mt-3 text-xl text-gray-300 sm:mt-4">
+            {t('pricing.description')}
+          </p>
+
+          {/* Toggle */}
+          <div className="mt-6 flex justify-center items-center gap-4">
+            <span className={`text-lg ${!isYearly ? 'text-white' : 'text-gray-400'}`}>
+              {t('pricing.monthly')}
+            </span>
             <button
+              type="button"
+              className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                isYearly ? 'bg-[#3B82F6]' : 'bg-gray-700'
+              }`}
+              role="switch"
+              aria-checked={isYearly}
               onClick={() => setIsYearly(!isYearly)}
-              className="relative inline-flex h-6 w-11 mx-3 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 bg-blue-600"
             >
               <span
-                className={`${
+                aria-hidden="true"
+                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
                   isYearly ? 'translate-x-5' : 'translate-x-0'
-                } pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out`}
+                }`}
               />
             </button>
-            <span className={`text-sm ${isYearly ? 'text-white' : 'text-gray-400'}`}>Yearly</span>
+            <span className={`text-lg ${isYearly ? 'text-white' : 'text-gray-400'}`}>
+              {t('pricing.yearly')}
+            </span>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        <div className="mt-16 grid gap-8 lg:grid-cols-3 lg:gap-6">
           {plans.map((plan) => (
             <div
               key={plan.name}
-              className={`relative card p-8 flex flex-col transition-all duration-300 hover:-translate-y-2 ${
-                plan.popular ? 'border-2 border-blue-500 hover:border-blue-400' : 'hover:border-2 hover:border-gray-400'
+              className={`rounded-2xl bg-white/5 backdrop-blur-sm p-8 relative flex flex-col ${
+                plan.popular
+                  ? 'ring-2 ring-[#3B82F6] scale-105 lg:scale-110'
+                  : ''
               }`}
             >
               {plan.popular && (

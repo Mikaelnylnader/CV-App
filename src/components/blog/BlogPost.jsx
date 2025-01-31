@@ -1,65 +1,89 @@
 import React from 'react';
-import { Paper, Typography, Box, Avatar, Chip, Divider } from '@mui/material';
-import { styled } from '@mui/material/styles';
-
-const StyledPaper = styled(Paper)(({ theme }) => ({
-  overflow: 'hidden',
-  transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
-  '&:hover': {
-    transform: 'translateY(-4px)',
-    boxShadow: theme.shadows[4],
-  },
-}));
-
-const BlogImage = styled('img')({
-  width: '100%',
-  height: '300px',
-  objectFit: 'cover',
-  transition: 'transform 0.3s ease-in-out',
-  '&:hover': {
-    transform: 'scale(1.05)',
-  },
-});
+import { Card, CardContent, CardMedia, Typography, Box, Chip } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const BlogPost = ({ post }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    console.log('Navigating to blog post:', post.slug);
+    navigate(`/blog/${post.slug}`);
+  };
+
   return (
-    <StyledPaper elevation={2}>
-      <Box sx={{ position: 'relative' }}>
-        <BlogImage
-          src={post.imageUrl}
-          alt={post.title}
-        />
-      </Box>
-      
-      <Box sx={{ p: 3 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-          <Avatar sx={{ bgcolor: 'primary.main', width: 32, height: 32, mr: 1 }}>
-            {post.author[0]}
-          </Avatar>
-          <Typography variant="subtitle2" color="text.secondary">
-            {post.author}
-          </Typography>
-          <Divider orientation="vertical" flexItem sx={{ mx: 2 }} />
-          <Typography variant="subtitle2" color="text.secondary">
-            {post.date}
+    <Card 
+      sx={{ 
+        height: '100%', 
+        display: 'flex', 
+        flexDirection: 'column',
+        cursor: 'pointer',
+        '&:hover': {
+          transform: 'translateY(-4px)',
+          boxShadow: 3,
+          transition: 'all 0.3s ease-in-out'
+        }
+      }}
+      onClick={handleClick}
+    >
+      <CardMedia
+        component="img"
+        height="240"
+        image={post.imageUrl}
+        alt={post.title}
+        sx={{ objectFit: 'cover' }}
+      />
+      <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ mb: 2 }}>
+          <Chip 
+            label={post.tags[0]} 
+            size="small" 
+            sx={{ 
+              backgroundColor: 'primary.main',
+              color: 'white',
+              fontWeight: 500,
+              mb: 2
+            }} 
+          />
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+            {post.date} · {post.readTime}
           </Typography>
         </Box>
-
-        <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
+        
+        <Typography 
+          variant="h5" 
+          component="h2" 
+          gutterBottom 
+          sx={{ 
+            fontWeight: 700,
+            fontSize: '1.5rem',
+            lineHeight: 1.3,
+            mb: 2
+          }}
+        >
           {post.title}
         </Typography>
-
-        <Typography variant="body1" color="text.secondary" paragraph>
+        
+        <Typography 
+          variant="body1" 
+          color="text.secondary" 
+          paragraph 
+          sx={{ mb: 'auto' }}
+        >
           {post.summary}
         </Typography>
-
-        <Divider sx={{ my: 2 }} />
-
-        <Typography variant="body1" paragraph>
-          {post.content}
-        </Typography>
-      </Box>
-    </StyledPaper>
+        
+        <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
+          <Box>
+            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+              {post.author}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {post.role}
+            </Typography>
+          </Box>
+        </Box>
+      </CardContent>
+    </Card>
   );
 };
 

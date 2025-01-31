@@ -21,50 +21,63 @@ export default function Login() {
     setError('');
 
     try {
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
-        password: password
+      const { data: { user, session }, error: signInError } = await supabase.auth.signInWithPassword({
+        email: email.trim().toLowerCase(),
+        password: password,
+        options: {
+          redirectTo: window.location.origin + '/dashboard'
+        }
       });
 
       if (signInError) {
+        console.error('Sign in error:', signInError);
         if (signInError.message.includes('Invalid login credentials')) {
           setError('Invalid email or password. Please try again.');
         } else {
-          setError(signInError.message);
+          setError(signInError.message || 'An error occurred during login');
         }
         return;
       }
 
-      if (data?.user) {
-        // Fetch subscription data
-        const { data: subscriptionData, error: subscriptionError } = await supabase
-          .from('subscriptions')
-          .select('*')
-          .eq('user_id', data.user.id)
-          .single();
-
-        if (subscriptionError && !subscriptionError.message.includes('No rows found')) {
-          console.error('Error fetching subscription:', subscriptionError);
-        }
-
-        // If no subscription exists, create a free one
-        if (!subscriptionData) {
-          const { error: createError } = await supabase
+      if (user && session) {
+        try {
+          // Fetch subscription data
+          const { data: subscriptionData, error: subscriptionError } = await supabase
             .from('subscriptions')
-            .insert([
-              {
-                user_id: data.user.id,
-                plan: 'free',
-                status: 'active'
-              }
-            ]);
+            .select('*')
+            .eq('user_id', user.id)
+            .single();
 
-          if (createError) {
-            console.error('Error creating subscription:', createError);
+          if (subscriptionError && !subscriptionError.message?.includes('No rows found')) {
+            console.error('Error fetching subscription:', subscriptionError);
           }
-        }
 
-        navigate('/dashboard');
+          // If no subscription exists, create a free one
+          if (!subscriptionData) {
+            const { error: createError } = await supabase
+              .from('subscriptions')
+              .insert([
+                {
+                  user_id: user.id,
+                  plan: 'free',
+                  status: 'active'
+                }
+              ]);
+
+            if (createError) {
+              console.error('Error creating subscription:', createError);
+            }
+          }
+
+          // Redirect to dashboard
+          navigate('/dashboard');
+        } catch (error) {
+          console.error('Error handling subscription:', error);
+          // Still redirect to dashboard even if subscription handling fails
+          navigate('/dashboard');
+        }
+      } else {
+        setError('Login successful but no user data received. Please try again.');
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -87,35 +100,14 @@ export default function Login() {
           </p>
         </div>
 
-        {error && (
-          <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <div className="ml-3">
-                <p className="text-sm text-red-700">{error}</p>
-                {error.includes('Invalid') && (
-                  <p className="mt-2 text-sm text-red-700">
-                    New user?{' '}
-                    <Link to="/signup" className="font-medium text-red-700 underline">
-                      Create an account here
-                    </Link>
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
         <form className="mt-8 space-y-6" onSubmit={handleLogin}>
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
-              <label htmlFor="email" className="sr-only">Email address</label>
+              <label htmlFor="email-address" className="sr-only">
+                Email address
+              </label>
               <input
-                id="email"
+                id="email-address"
                 name="email"
                 type="email"
                 autoComplete="email"
@@ -127,7 +119,9 @@ export default function Login() {
               />
             </div>
             <div>
-              <label htmlFor="password" className="sr-only">Password</label>
+              <label htmlFor="password" className="sr-only">
+                Password
+              </label>
               <input
                 id="password"
                 name="password"
@@ -142,23 +136,30 @@ export default function Login() {
             </div>
           </div>
 
+          {error && (
+            <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm text-red-700">{error}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div>
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+              className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+                loading ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
             >
-              {loading ? (
-                <span className="flex items-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Signing in...
-                </span>
-              ) : (
-                'Sign in'
-              )}
+              {loading ? 'Signing in...' : 'Sign in'}
             </button>
           </div>
         </form>

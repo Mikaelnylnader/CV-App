@@ -60,7 +60,11 @@ export default function Header() {
               <Link to="/resumes" className="text-gray-600 hover:text-blue-600 transition-colors">
                 {t('common.myResumes')}
               </Link>
-              <Link to="/blog" className="text-gray-600 hover:text-blue-600 transition-colors">
+              <Link
+                to="/blog"
+                onClick={() => window.scrollTo(0, 0)}
+                style={{ textDecoration: 'none', color: 'inherit' }}
+              >
                 Blog
               </Link>
             </>
@@ -75,7 +79,11 @@ export default function Header() {
               <a href="#pricing" onClick={scrollToSection('pricing')} className="text-gray-600 hover:text-blue-600 transition-colors">
                 {t('common.pricing')}
               </a>
-              <Link to="/blog" className="text-gray-600 hover:text-blue-600 transition-colors">
+              <Link
+                to="/blog"
+                onClick={() => window.scrollTo(0, 0)}
+                style={{ textDecoration: 'none', color: 'inherit' }}
+              >
                 Blog
               </Link>
             </>

@@ -1,43 +1,98 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { ArrowRightIcon } from '@heroicons/react/24/outline';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ArrowRightIcon } from '@heroicons/react/24/outline';
+import { motion } from 'framer-motion';
 
 export default function Hero() {
-  const { t } = useTranslation();
   const navigate = useNavigate();
+  const [titleNumber, setTitleNumber] = useState(0);
+  const titles = useMemo(() => ["Resume", "Cover letter"], []);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setTitleNumber(titleNumber === titles.length - 1 ? 0 : titleNumber + 1);
+    }, 2000);
+    return () => clearTimeout(timeoutId);
+  }, [titleNumber, titles]);
 
   return (
-    <div className="relative overflow-hidden bg-gray-900">
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-900 to-indigo-900 mix-blend-multiply" />
-      </div>
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
-        <div className="text-center animate-fade-in">
-          <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-8 tracking-tight">
-            <span className="block">{t('hero.title')}</span>
-            <span className="block text-blue-400">{t('hero.subtitle')}</span>
-          </h1>
-          <p className="mt-6 max-w-2xl mx-auto text-xl md:text-2xl text-blue-100 leading-relaxed">
-            {t('hero.description')}
-          </p>
-          <div className="mt-12 flex justify-center space-x-6">
-            <button 
-              onClick={() => navigate('/dashboard')}
-              className="btn-primary group"
+    <div className="relative overflow-hidden min-h-[80vh] flex items-center bg-gradient-to-br from-[#020617] via-[#0B1120] to-[#1e3a8a]">
+      {/* Background overlay with subtle texture */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.03)_0%,_rgba(255,255,255,0)_100%)]" />
+      
+      {/* Content */}
+      <div className="relative w-full">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex gap-8 py-20 lg:py-32 items-center justify-center flex-col">
+            <div className="flex gap-4 flex-col max-w-4xl">
+              <h1 className="text-center">
+                <motion.div 
+                  className="text-5xl md:text-7xl font-extrabold text-white mb-4 tracking-tight"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8 }}
+                >
+                  Land Your Dream Job with
+                </motion.div>
+                <motion.div 
+                  className="text-5xl md:text-7xl font-extrabold text-[#3B82F6] relative"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                >
+                  AI-Powered
+                  <div className="relative flex w-full justify-center overflow-hidden text-center h-[1.2em]">
+                    {titles.map((title, index) => (
+                      <motion.span
+                        key={index}
+                        className="absolute"
+                        initial={{ opacity: 0, y: 150 }}
+                        animate={
+                          titleNumber === index
+                            ? { y: 0, opacity: 1 }
+                            : { y: titleNumber > index ? -150 : 150, opacity: 0 }
+                        }
+                        transition={{ type: "spring", stiffness: 50 }}
+                      >
+                        {title}
+                      </motion.span>
+                    ))}
+                  </div>
+                  <motion.div 
+                    className="absolute bottom-0 left-0 h-1 bg-[#3B82F6] rounded-full"
+                    initial={{ width: "0%" }}
+                    animate={{ width: "100%" }}
+                    transition={{ duration: 0.8, delay: 0.6 }}
+                  />
+                </motion.div>
+              </h1>
+
+              <motion.p 
+                className="mt-8 text-lg sm:text-xl md:text-2xl text-gray-300 text-center max-w-3xl mx-auto"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+              >
+                Transform your resume instantly with AI that tailors your experience to match any job description
+              </motion.p>
+            </div>
+            
+            <motion.div 
+              className="mt-12 flex flex-row gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
             >
-              {t('hero.cta')}
-              <ArrowRightIcon className="w-5 h-5 ml-2 inline-block group-hover:translate-x-1 transition-transform" />
-            </button>
+              <button
+                onClick={() => navigate('/signup')}
+                className="px-8 py-4 bg-[#3B82F6] text-white rounded-full font-semibold text-lg hover:bg-blue-600 transition-colors duration-200 flex items-center group"
+              >
+                Try It Now
+                <ArrowRightIcon className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </motion.div>
           </div>
         </div>
-      </div>
-      
-      <div className="absolute top-0 right-0 -translate-y-12 translate-x-12 transform">
-        <div className="w-64 h-64 bg-gradient-to-br from-blue-500/30 to-transparent rounded-full blur-3xl" />
-      </div>
-      <div className="absolute bottom-0 left-0 translate-y-12 -translate-x-12 transform">
-        <div className="w-64 h-64 bg-gradient-to-tr from-indigo-500/30 to-transparent rounded-full blur-3xl" />
       </div>
     </div>
   );

@@ -1,3 +1,6 @@
+-- Set the frontend URL for the application
+ALTER DATABASE postgres SET app.frontend_url TO 'http://localhost:3000';
+
 -- Create or replace the resume webhook status update function
 CREATE OR REPLACE FUNCTION public.update_resume_webhook_status(
     resume_id uuid,
@@ -44,8 +47,21 @@ BEGIN
     IF NOT FOUND THEN
         RAISE EXCEPTION 'Resume with ID % not found', resume_id;
     END IF;
+
+    -- If status is completed, trigger completion handler
+    IF new_status = 'completed' THEN
+        -- Make HTTP request to application server
+        PERFORM http_post(
+            current_setting('app.frontend_url') || '/api/resume/completion',
+            json_build_object('resumeId', resume_id)::text,
+            'application/json'
+        );
+    END IF;
 END;
 $$;
 
 -- Grant execute permissions
 GRANT EXECUTE ON FUNCTION public.update_resume_webhook_status TO service_role;
+
+-- Create HTTP extension if not exists
+CREATE EXTENSION IF NOT EXISTS http;

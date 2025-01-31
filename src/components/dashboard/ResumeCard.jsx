@@ -146,7 +146,7 @@ export default function ResumeCard({ resume, onDelete }) {
       <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6 border border-gray-200">
         <div className="flex items-start justify-between">
           <div 
-            className="flex items-center cursor-pointer"
+            className="flex items-start cursor-pointer"
             onClick={handlePreview}
           >
             <DocumentTextIcon className="h-8 w-8 text-blue-600" />

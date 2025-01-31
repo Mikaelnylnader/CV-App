@@ -17,7 +17,6 @@ const navigation = [
   { name: 'Cover Letter From CV', icon: PencilSquareIcon, path: '/dashboard/cover-letter' },
   { name: 'Cover Letter from URL', icon: ChartBarIcon, path: '/dashboard/cover-letter-from-cover-letter' },
   { name: 'Career Resources', icon: BookOpenIcon, path: '/resources' },
-  { name: 'Profile Settings', icon: UserIcon, path: '/profile' },
   { name: 'Account Settings', icon: Cog6ToothIcon, path: '/settings' }
 ];
 

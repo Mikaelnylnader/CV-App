@@ -10,35 +10,38 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-gray-900 text-gray-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <footer className="relative bg-gradient-to-br from-[#020617] via-[#0B1120] to-[#1e3a8a] text-gray-300">
+      {/* Background overlay with subtle texture */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.03)_0%,_rgba(255,255,255,0)_100%)]" />
+      
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <h3 className="text-white font-bold text-lg mb-4">AI Resume Pro</h3>
-            <p className="text-sm">Making job applications smarter with AI</p>
+            <p className="text-sm text-gray-400">Making job applications smarter with AI</p>
           </div>
           <div>
             <h4 className="text-white font-semibold mb-4">Product</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#features" className="hover:text-blue-400 transition-colors">
+                <Link to="/features" className="text-gray-400 hover:text-white transition-colors">
                   Features
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#how-it-works" className="hover:text-blue-400 transition-colors">
+                <Link to="/how-it-works" className="text-gray-400 hover:text-white transition-colors">
                   How It Works
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#success-stories" className="hover:text-blue-400 transition-colors">
+                <Link to="/success-stories" className="text-gray-400 hover:text-white transition-colors">
                   Success Stories
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#pricing" className="hover:text-blue-400 transition-colors">
+                <Link to="/pricing" className="text-gray-400 hover:text-white transition-colors">
                   Pricing
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -46,17 +49,17 @@ export default function Footer() {
             <h4 className="text-white font-semibold mb-4">Company</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/about" className="hover:text-blue-400 transition-colors">
+                <Link to="/about" className="text-gray-400 hover:text-white transition-colors">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="hover:text-blue-400 transition-colors">
+                <Link to="/contact" className="text-gray-400 hover:text-white transition-colors">
                   Contact
                 </Link>
               </li>
               <li>
-                <Link to="/privacy" className="hover:text-blue-400 transition-colors">
+                <Link to="/privacy" className="text-gray-400 hover:text-white transition-colors">
                   Privacy Policy
                 </Link>
               </li>
@@ -66,24 +69,24 @@ export default function Footer() {
             <h4 className="text-white font-semibold mb-4">Support</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/help" className="hover:text-blue-400 transition-colors" onClick={scrollToTop}>
+                <Link to="/help" className="text-gray-400 hover:text-white transition-colors" onClick={scrollToTop}>
                   Help Center
                 </Link>
               </li>
               <li>
-                <Link to="/terms" className="hover:text-blue-400 transition-colors" onClick={scrollToTop}>
+                <Link to="/terms" className="text-gray-400 hover:text-white transition-colors" onClick={scrollToTop}>
                   Terms of Service
                 </Link>
               </li>
               <li>
-                <Link to="/faq" className="hover:text-blue-400 transition-colors" onClick={scrollToTop}>
+                <Link to="/faq" className="text-gray-400 hover:text-white transition-colors" onClick={scrollToTop}>
                   FAQ
                 </Link>
               </li>
             </ul>
           </div>
         </div>
-        <div className="border-t border-gray-800 mt-12 pt-8 text-sm text-center">
+        <div className="border-t border-gray-800/50 mt-12 pt-8 text-sm text-center text-gray-400">
           © {new Date().getFullYear()} AI Resume Pro. All rights reserved.
         </div>
       </div>

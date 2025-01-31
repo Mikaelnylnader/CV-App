@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabaseClient';
+import { emailService } from '../services/emailService';
 
 export const resumeService = {
   async uploadResume(file, jobUrl) {
@@ -129,6 +130,47 @@ export const resumeService = {
       return { resume };
     } catch (error) {
       console.error('Resume upload error:', error);
+      throw error;
+    }
+  },
+
+  async handleResumeCompletion(resumeId) {
+    try {
+      // Get resume details
+      const { data: resume, error: resumeError } = await supabase
+        .from('resumes')
+        .select('*')
+        .eq('id', resumeId)
+        .single();
+
+      if (resumeError) throw resumeError;
+
+      // Get user details
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError) throw userError;
+
+      // Update resume status to completed
+      const { error: updateError } = await supabase
+        .from('resumes')
+        .update({ status: 'completed' })
+        .eq('id', resumeId);
+
+      if (updateError) throw updateError;
+
+      // Send completion email
+      try {
+        await emailService.sendCVCompletionEmail(user, {
+          originalFilename: resume.original_filename,
+          jobUrl: resume.job_url
+        });
+      } catch (emailError) {
+        console.error('Error sending CV completion email:', emailError);
+        // Don't block the process if email fails
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error('Error handling resume completion:', error);
       throw error;
     }
   }

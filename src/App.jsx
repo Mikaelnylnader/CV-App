@@ -15,7 +15,7 @@ import ResumesView from './pages/ResumesView';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Blog from './pages/Blog';
-import BlogPost from './pages/BlogPost';
+import BlogPostPage from './pages/BlogPostPage';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import Privacy from './pages/Privacy';
@@ -29,13 +29,15 @@ import CoverLetterFromCoverLetter from './pages/CoverLetterFromCoverLetter';
 import Settings from './pages/Settings';
 import CareerResources from './pages/CareerResources';
 import ChatBot from './components/ChatBot';
-import { testConnection } from './lib/supabaseClient';
+import { initializeSupabase } from './lib/supabaseClient';
 import ResumeFromUrl from './pages/ResumeFromUrl';
 import ResumeCoverLetterFromUrl from './pages/ResumeCoverLetterFromUrl';
 import ResumeToJobs from './pages/ResumeToJobs';
 import HelpCenter from './pages/HelpCenter';
 import TermsOfService from './pages/TermsOfService';
 import FAQ from './pages/FAQ';
+import InterviewPrep from './pages/InterviewPrep';
+import InterviewPrepDetail from './pages/InterviewPrepDetail';
 
 function PublicLayout() {
   return (
@@ -43,7 +45,6 @@ function PublicLayout() {
       <div className="flex-grow">
         <Outlet />
       </div>
-      <Footer />
     </div>
   );
 }
@@ -60,13 +61,12 @@ function PrivateRoute({ children }) {
 
 function LandingPage() {
   return (
-    <>
+    <div className="min-h-screen">
       <Hero />
       <Features />
       <HowItWorks />
       <Pricing />
-      <Footer />
-    </>
+    </div>
   );
 }
 
@@ -74,7 +74,7 @@ export default function App() {
   const { user } = useAuth();
 
   useEffect(() => {
-    testConnection();
+    initializeSupabase();
   }, []);
 
   return (
@@ -82,103 +82,101 @@ export default function App() {
       <HelmetProvider>
         <AuthProvider>
           <SubscriptionProvider>
-            <div className="min-h-screen">
+            <div className="min-h-screen flex flex-col">
               <Header />
-              <Routes>
-                <Route path="/" element={<LandingPage />} />
-                
-                {/* Public routes with Footer */}
-                <Route element={<PublicLayout />}>
-                  <Route path="/blog" element={<Blog />} />
-                  <Route path="/blog/:id" element={<BlogPost />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="/privacy" element={<Privacy />} />
-                  <Route path="/help" element={<HelpCenter />} />
-                  <Route path="/terms" element={<TermsOfService />} />
-                  <Route path="/faq" element={<FAQ />} />
-                  <Route path="/signup" element={<Signup />} />
-                </Route>
+              <div className="pt-16 flex-grow"> {/* Add flex-grow to push footer to bottom */}
+                <Routes>
+                  {/* Public routes */}
+                  <Route path="/" element={<LandingPage />} />
+                  
+                  {/* Public routes with layout */}
+                  <Route element={<PublicLayout />}>
+                    <Route path="/blog/*" element={<Blog />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/privacy" element={<Privacy />} />
+                    <Route path="/signup" element={<Signup />} />
+                    <Route path="/help" element={<HelpCenter />} />
+                    <Route path="/terms" element={<TermsOfService />} />
+                    <Route path="/faq" element={<FAQ />} />
+                  </Route>
 
-                {/* Private routes */}
-                <Route path="/cvs" element={
-                  <PrivateRoute>
-                    <CVDashboard />
-                  </PrivateRoute>
-                } />
-                <Route path="/dashboard" element={
-                  <PrivateRoute>
-                    <Dashboard />
-                  </PrivateRoute>
-                } />
-                <Route path="/dashboard/upload" element={
-                  <PrivateRoute>
-                    <div className="flex h-screen bg-gray-50">
-                      <Sidebar currentPage="Upload Resume" />
-                      <main className="flex-1 overflow-y-auto md:ml-16">
-                        <div className="py-8 px-4 sm:px-6 lg:px-8">
-                          <h1 className="text-2xl font-bold text-gray-900 mb-8">New Resume from URL</h1>
-                          <UploadSection />
-                          
-                          <div className="mt-12">
-                            <h2 className="text-xl font-bold text-gray-900 mb-6">Recent Activity</h2>
-                            <div className="bg-white rounded-lg shadow-sm p-6">
-                              <ResumeList />
-                            </div>
-                          </div>
-                        </div>
-                      </main>
-                    </div>
-                  </PrivateRoute>
-                } />
-                <Route path="/dashboard/cover-letter" element={
-                  <PrivateRoute>
-                    <CoverLetterPage />
-                  </PrivateRoute>
-                } />
-                <Route path="/dashboard/resume-from-url" element={
-                  <PrivateRoute>
-                    <ResumeCoverLetterFromUrl />
-                  </PrivateRoute>
-                } />
-                <Route path="/dashboard/cover-letter-from-cover-letter" element={
-                  <PrivateRoute>
-                    <CoverLetterFromCoverLetter />
-                  </PrivateRoute>
-                } />
-                <Route path="/dashboard/cover-letter-from-url" element={
-                  <PrivateRoute>
-                    <ResumeToJobs />
-                  </PrivateRoute>
-                } />
-                <Route path="/settings" element={
-                  <PrivateRoute>
-                    <Settings />
-                  </PrivateRoute>
-                } />
-                <Route path="/resumes" element={
-                  <PrivateRoute>
-                    <ResumesView />
-                  </PrivateRoute>
-                } />
-                <Route path="/resumes/edit/:id" element={
-                  <PrivateRoute>
-                    <EditResume />
-                  </PrivateRoute>
-                } />
-                <Route path="/resources" element={
-                  <PrivateRoute>
-                    <CareerResources />
-                  </PrivateRoute>
-                } />
-                <Route path="/admin/blog" element={
-                  <PrivateRoute>
-                    <AdminBlog />
-                  </PrivateRoute>
-                } />
-              </Routes>
+                  {/* Private routes */}
+                  <Route path="/dashboard" element={
+                    <PrivateRoute>
+                      <Dashboard />
+                    </PrivateRoute>
+                  } />
+                  <Route path="/dashboard/interview-prep" element={
+                    <PrivateRoute>
+                      <InterviewPrep />
+                    </PrivateRoute>
+                  } />
+                  <Route path="/dashboard/interview-prep/:id" element={
+                    <PrivateRoute>
+                      <InterviewPrepDetail />
+                    </PrivateRoute>
+                  } />
+                  <Route path="/dashboard/resume-from-url" element={
+                    <PrivateRoute>
+                      <ResumeFromUrl />
+                    </PrivateRoute>
+                  } />
+                  <Route path="/dashboard/cover-letter" element={
+                    <PrivateRoute>
+                      <CoverLetterPage />
+                    </PrivateRoute>
+                  } />
+                  <Route path="/dashboard/cover-letter-from-cover-letter" element={
+                    <PrivateRoute>
+                      <CoverLetterFromCoverLetter />
+                    </PrivateRoute>
+                  } />
+                  <Route path="/dashboard/resume-cover-letter-from-url" element={
+                    <PrivateRoute>
+                      <ResumeCoverLetterFromUrl />
+                    </PrivateRoute>
+                  } />
+                  <Route path="/dashboard/resume-to-jobs" element={
+                    <PrivateRoute>
+                      <ResumeToJobs />
+                    </PrivateRoute>
+                  } />
+                  <Route path="/dashboard/cover-letter-from-url" element={
+                    <PrivateRoute>
+                      <CoverLetterPage />
+                    </PrivateRoute>
+                  } />
+                  <Route path="/dashboard/upload" element={
+                    <PrivateRoute>
+                      <UploadSection />
+                    </PrivateRoute>
+                  } />
+                  <Route path="/cvs" element={
+                    <PrivateRoute>
+                      <CVDashboard />
+                    </PrivateRoute>
+                  } />
+                  <Route path="/settings" element={
+                    <PrivateRoute>
+                      <Settings />
+                    </PrivateRoute>
+                  } />
+                  <Route path="/resumes" element={
+                    <PrivateRoute>
+                      <ResumesView />
+                    </PrivateRoute>
+                  } />
+                  <Route path="/resources" element={
+                    <PrivateRoute>
+                      <CareerResources />
+                    </PrivateRoute>
+                  } />
+                </Routes>
+              </div>
               {user && <ChatBot />}
+              <Footer />
             </div>
           </SubscriptionProvider>
         </AuthProvider>
