@@ -1,13 +1,9 @@
 [build]
-  command = "yarn install && yarn build"
+  command = "npm run build"
   publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "20.11.0"
-  YARN_VERSION = "1.22.22"
-  VITE_SUPABASE_URL = "https://dhwmktvipzlverocznnt.supabase.co"
-  VITE_MAKE_RESUME_WEBHOOK = "https://hook.eu2.make.com/ulkaozsur8jwqh7goavq2cflmj2yeiup"
-  VITE_MAKE_COVER_LETTER_WEBHOOK = "https://hook.eu2.make.com/br45evlruu19bzygyr1949ifx7dqcrsd"
+  NODE_VERSION = "18"
 
 [[redirects]]
   from = "/*"
