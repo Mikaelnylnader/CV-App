@@ -1,5 +1,5 @@
 [build]
-  command = "yarn config set registry https://registry.yarnpkg.com && yarn config set always-auth false && yarn config set strict-ssl false && yarn install --frozen-lockfile --network-timeout 600000 && yarn build"
+  command = "yarn install --frozen-lockfile && yarn build"
   publish = "dist"
   base = "/"
 
@@ -8,17 +8,33 @@
   YARN_VERSION = "1.22.19"
   CI = "true"
   NODE_ENV = "production"
-  YARN_FLAGS = "--network-timeout 600000 --no-optional --frozen-lockfile"
   USE_YARN = "true"
+  YARN_FLAGS = "--frozen-lockfile --network-timeout 600000 --no-optional"
+  
+  # Registry settings
+  NPM_CONFIG_REGISTRY = "https://registry.npmjs.org/"
   YARN_REGISTRY = "https://registry.yarnpkg.com"
+  
+  # Authentication settings
+  NPM_CONFIG_ALWAYS_AUTH = "false"
+  NPM_TOKEN = ""
+  YARN_AUTH_TOKEN = ""
+  
+  # SSL settings
+  NPM_CONFIG_STRICT_SSL = "false"
+  YARN_STRICT_SSL = "false"
+  
+  # Performance settings
+  YARN_NETWORK_TIMEOUT = "600000"
   YARN_ENABLE_GLOBAL_CACHE = "true"
   YARN_ENABLE_MIRROR = "true"
   YARN_ENABLE_IMMUTABLE_CACHE = "true"
-  YARN_ENABLE_TELEMETRY = "false"
+  
+  # Dependency settings
   YARN_IGNORE_ENGINES = "true"
   YARN_IGNORE_OPTIONAL = "true"
-  YARN_STRICT_SSL = "false"
-  YARN_NETWORK_TIMEOUT = "600000"
+  NPM_CONFIG_LEGACY_PEER_DEPS = "true"
+  NPM_CONFIG_ENGINE_STRICT = "false"
 
 [[redirects]]
   from = "/*"
