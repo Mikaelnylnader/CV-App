@@ -1,5 +1,5 @@
 [build]
-  command = "yarn install && yarn build"
+  command = "corepack enable && yarn install --frozen-lockfile && yarn build"
   publish = "dist"
   base = "/"
 
@@ -8,6 +8,8 @@
   YARN_VERSION = "1.22.19"
   CI = "true"
   NODE_ENV = "production"
+  NPM_FLAGS = "--no-optional"
+  YARN_FLAGS = "--no-optional --frozen-lockfile --network-timeout 600000"
 
 [[redirects]]
   from = "/*"
