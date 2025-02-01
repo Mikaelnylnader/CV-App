@@ -1,9 +1,11 @@
 [build]
-  command = "npm install --no-audit --no-fund && npm run build"
+  command = "npm config set registry https://registry.npmjs.org/ && npm install && npm run build"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "18"
+  NPM_CONFIG_REGISTRY = "https://registry.npmjs.org/"
+  NPM_CONFIG_ALWAYS_AUTH = "false"
 
 [[redirects]]
   from = "/*"
