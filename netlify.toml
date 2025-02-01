@@ -1,5 +1,5 @@
 [build]
-  command = "yarn install --frozen-lockfile --network-timeout 600000 && yarn build"
+  command = "corepack enable && corepack prepare yarn@1.22.19 --activate && yarn install --frozen-lockfile --network-timeout 600000 && yarn build"
   publish = "dist"
   base = "/"
 
@@ -14,6 +14,9 @@
   YARN_ENABLE_GLOBAL_CACHE = "true"
   YARN_ENABLE_MIRROR = "true"
   YARN_ENABLE_IMMUTABLE_CACHE = "true"
+  NPM_CONFIG_ENGINE_STRICT = "true"
+  SKIP_NPM = "true"
+  DISABLE_NPM = "true"
 
 [[redirects]]
   from = "/*"
