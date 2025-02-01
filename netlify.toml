@@ -1,5 +1,5 @@
 [build]
-  command = "npm config set registry https://registry.npmjs.org/ && npm config set always-auth false && npm config set strict-ssl false && npm config set legacy-peer-deps true && npm config set engine-strict false && npm config set ignore-engines true && npm config set ignore-scripts true && npm config set no-optional true && npm config set production true && npm config set audit false && npm config set fund false && npm config set update-notifier false && yarn install --frozen-lockfile --network-timeout 600000 --non-interactive && yarn build"
+  command = "yarn netlify:build"
   publish = "dist"
   base = "/"
 
