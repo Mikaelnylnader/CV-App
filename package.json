@@ -3,9 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "packageManager": "yarn@1.22.19",
   "engines": {
-    "node": ">=20.0.0",
-    "npm": ">=10.0.0"
+    "node": ">=20.0.0"
   },
   "scripts": {
     "start": "vite",
@@ -13,7 +13,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "netlify:build": "yarn install --frozen-lockfile --network-timeout 600000 --non-interactive && yarn build"
+    "netlify:build": "NODE_ENV=production yarn install --frozen-lockfile --network-timeout 600000 --non-interactive --no-progress && yarn build"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",

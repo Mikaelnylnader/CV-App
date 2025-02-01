@@ -1,5 +1,5 @@
 [build]
-  command = "yarn netlify:build"
+  command = "corepack enable && corepack prepare yarn@1.22.19 --activate && yarn config set registry https://registry.yarnpkg.com && yarn config set always-auth false && yarn config set strict-ssl false && yarn netlify:build"
   publish = "dist"
   base = "/"
 
@@ -9,19 +9,15 @@
   CI = "true"
   NODE_ENV = "production"
   USE_YARN = "true"
-  YARN_FLAGS = "--frozen-lockfile --network-timeout 600000 --no-optional --non-interactive"
+  YARN_FLAGS = "--frozen-lockfile --network-timeout 600000 --no-optional --non-interactive --no-progress"
   
   # Registry settings
-  NPM_CONFIG_REGISTRY = "https://registry.npmjs.org/"
   YARN_REGISTRY = "https://registry.yarnpkg.com"
   
   # Authentication settings
-  NPM_CONFIG_ALWAYS_AUTH = "false"
-  NPM_TOKEN = ""
   YARN_AUTH_TOKEN = ""
   
   # SSL settings
-  NPM_CONFIG_STRICT_SSL = "false"
   YARN_STRICT_SSL = "false"
   
   # Performance settings
@@ -33,14 +29,15 @@
   # Dependency settings
   YARN_IGNORE_ENGINES = "true"
   YARN_IGNORE_OPTIONAL = "true"
-  NPM_CONFIG_LEGACY_PEER_DEPS = "true"
-  NPM_CONFIG_ENGINE_STRICT = "false"
-  NPM_CONFIG_IGNORE_SCRIPTS = "true"
-  NPM_CONFIG_NO_OPTIONAL = "true"
-  NPM_CONFIG_PRODUCTION = "true"
-  NPM_CONFIG_AUDIT = "false"
-  NPM_CONFIG_FUND = "false"
-  NPM_CONFIG_UPDATE_NOTIFIER = "false"
+  YARN_IGNORE_SCRIPTS = "true"
+  YARN_NO_PROGRESS = "true"
+  YARN_SILENT = "true"
+  YARN_PRODUCTION = "true"
+  YARN_PURE_LOCKFILE = "true"
+  YARN_PREFER_OFFLINE = "true"
+  YARN_SKIP_INTEGRITY_CHECK = "true"
+  YARN_NON_INTERACTIVE = "true"
+  YARN_DISABLE_SELF_UPDATE_CHECK = "true"
 
 [[redirects]]
   from = "/*"
