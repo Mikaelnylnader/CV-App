@@ -1,5 +1,5 @@
 [build]
-  command = "corepack enable && corepack prepare yarn@1.22.19 --activate && yarn config set registry https://registry.yarnpkg.com && yarn config set always-auth false && yarn config set strict-ssl false && yarn install --frozen-lockfile --network-timeout 600000 --non-interactive && yarn build"
+  command = "corepack enable && corepack prepare yarn@1.22.19 --activate && yarn config set registry https://registry.npmjs.org/ && yarn config set always-auth false && yarn config set strict-ssl false && yarn install --frozen-lockfile --network-timeout 600000 --non-interactive && yarn build"
   publish = "dist"
   base = "/"
 
@@ -12,7 +12,7 @@
   YARN_FLAGS = "--frozen-lockfile --network-timeout 600000 --no-optional --non-interactive --no-progress"
   
   # Registry settings
-  YARN_REGISTRY = "https://registry.yarnpkg.com"
+  YARN_REGISTRY = "https://registry.npmjs.org/"
   
   # Authentication settings
   YARN_AUTH_TOKEN = ""
