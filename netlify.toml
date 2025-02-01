@@ -1,5 +1,5 @@
 [build]
-  command = "corepack enable && yarn install --frozen-lockfile && yarn build"
+  command = "yarn config set registry https://registry.yarnpkg.com && yarn install --frozen-lockfile && yarn build"
   publish = "dist"
   base = "/"
 
@@ -8,8 +8,9 @@
   YARN_VERSION = "1.22.19"
   CI = "true"
   NODE_ENV = "production"
-  NPM_FLAGS = "--no-optional"
-  YARN_FLAGS = "--no-optional --frozen-lockfile --network-timeout 600000"
+  YARN_FLAGS = "--network-timeout 600000"
+  USE_YARN = "true"
+  NPM_TOKEN = ""
 
 [[redirects]]
   from = "/*"
