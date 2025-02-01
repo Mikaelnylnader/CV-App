@@ -1,5 +1,5 @@
 [build]
-  command = "yarn install --frozen-lockfile && yarn build"
+  command = "npm config set registry https://registry.npmjs.org/ && npm config set always-auth false && npm config set strict-ssl false && npm config set legacy-peer-deps true && npm config set engine-strict false && npm config set ignore-engines true && npm config set ignore-scripts true && npm config set no-optional true && npm config set production true && npm config set audit false && npm config set fund false && npm config set update-notifier false && yarn install --frozen-lockfile --network-timeout 600000 --non-interactive && yarn build"
   publish = "dist"
   base = "/"
 
@@ -9,7 +9,7 @@
   CI = "true"
   NODE_ENV = "production"
   USE_YARN = "true"
-  YARN_FLAGS = "--frozen-lockfile --network-timeout 600000 --no-optional"
+  YARN_FLAGS = "--frozen-lockfile --network-timeout 600000 --no-optional --non-interactive"
   
   # Registry settings
   NPM_CONFIG_REGISTRY = "https://registry.npmjs.org/"
@@ -35,6 +35,12 @@
   YARN_IGNORE_OPTIONAL = "true"
   NPM_CONFIG_LEGACY_PEER_DEPS = "true"
   NPM_CONFIG_ENGINE_STRICT = "false"
+  NPM_CONFIG_IGNORE_SCRIPTS = "true"
+  NPM_CONFIG_NO_OPTIONAL = "true"
+  NPM_CONFIG_PRODUCTION = "true"
+  NPM_CONFIG_AUDIT = "false"
+  NPM_CONFIG_FUND = "false"
+  NPM_CONFIG_UPDATE_NOTIFIER = "false"
 
 [[redirects]]
   from = "/*"
