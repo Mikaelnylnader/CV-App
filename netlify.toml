@@ -1,15 +1,13 @@
 [build]
-  command = "npm config set registry https://registry.npmjs.org/ && npm config set always-auth false && npm install --no-audit --no-fund --registry=https://registry.npmjs.org/ && npm run build"
+  command = "yarn install && yarn build"
   publish = "dist"
   base = "/"
 
 [build.environment]
   NODE_VERSION = "20"
-  NPM_CONFIG_REGISTRY = "https://registry.npmjs.org/"
-  NPM_CONFIG_ALWAYS_AUTH = "false"
+  YARN_VERSION = "1.22.19"
   CI = "true"
   NODE_ENV = "production"
-  NPM_FLAGS = "--no-audit --no-fund --registry=https://registry.npmjs.org/"
 
 [[redirects]]
   from = "/*"
