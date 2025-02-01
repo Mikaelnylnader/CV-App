@@ -1,5 +1,5 @@
 [build]
-  command = "npm config set registry https://registry.npmjs.org/ && npm config set always-auth false && yarn config set registry https://registry.yarnpkg.com && yarn install --frozen-lockfile --network-timeout 600000 && yarn build"
+  command = "yarn install --frozen-lockfile --network-timeout 600000 && yarn build"
   publish = "dist"
   base = "/"
 
@@ -10,9 +10,10 @@
   NODE_ENV = "production"
   YARN_FLAGS = "--network-timeout 600000 --no-optional"
   USE_YARN = "true"
-  NPM_CONFIG_REGISTRY = "https://registry.npmjs.org/"
-  NPM_CONFIG_ALWAYS_AUTH = "false"
-  NPM_TOKEN = ""
+  YARN_REGISTRY = "https://registry.yarnpkg.com"
+  YARN_ENABLE_GLOBAL_CACHE = "true"
+  YARN_ENABLE_MIRROR = "true"
+  YARN_ENABLE_IMMUTABLE_CACHE = "true"
 
 [[redirects]]
   from = "/*"
