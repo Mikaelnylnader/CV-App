@@ -18,8 +18,7 @@ export default function Pricing() {
       priceId: null,
       price: {
         monthly: '0',
-        yearly: '0',
-        lifetime: null
+        yearly: '0'
       },
       features: [
         '3 Resume Customizations',
@@ -41,8 +40,7 @@ export default function Pricing() {
       },
       price: {
         monthly: '19.99',
-        yearly: '199.99',
-        lifetime: null
+        yearly: '199.99'
       },
       features: [
         'Unlimited Resume Customizations',
@@ -103,7 +101,6 @@ export default function Pricing() {
       setLoading(true);
       const priceId = plan.priceId?.lifetime || 
                      (isYearly ? plan.priceId.yearly : plan.priceId.monthly);
-                     
       await stripeService.createCheckoutSession(priceId, user.id);
     } catch (error) {
       console.error('Error starting checkout:', error);
@@ -143,14 +140,11 @@ export default function Pricing() {
           <h2 className="text-3xl font-bold text-white sm:text-4xl">
             {t('pricing.title')}
           </h2>
-          <p className="mt-3 text-xl text-gray-300 sm:mt-4">
-            {t('pricing.description')}
-          </p>
 
           {/* Toggle */}
           <div className="mt-6 flex justify-center items-center gap-4">
             <span className={`text-lg ${!isYearly ? 'text-white' : 'text-gray-400'}`}>
-              {t('pricing.monthly')}
+              Monthly
             </span>
             <button
               type="button"
@@ -169,43 +163,50 @@ export default function Pricing() {
               />
             </button>
             <span className={`text-lg ${isYearly ? 'text-white' : 'text-gray-400'}`}>
-              {t('pricing.yearly')}
+              Yearly
             </span>
           </div>
         </div>
 
-        <div className="mt-16 grid gap-8 lg:grid-cols-3 lg:gap-6">
+        <div className="mt-24 grid gap-8 lg:grid-cols-3 lg:gap-6">
           {plans.map((plan) => (
             <div
               key={plan.name}
-              className={`rounded-2xl bg-white/5 backdrop-blur-sm p-8 relative flex flex-col ${
+              className={`rounded-2xl bg-white/5 backdrop-blur-sm p-8 relative flex flex-col 
+                transition-all duration-300 ease-in-out
+                hover:transform hover:-translate-y-2 hover:shadow-2xl
+                hover:bg-white/10 hover:shadow-blue-500/20
+                ${
                 plan.popular
-                  ? 'ring-2 ring-[#3B82F6] scale-105 lg:scale-110'
-                  : ''
+                  ? 'ring-2 ring-[#3B82F6] scale-105 lg:scale-110 hover:ring-blue-400'
+                  : plan.name === 'Lifetime'
+                    ? 'hover:shadow-purple-500/20'
+                    : 'hover:shadow-blue-500/20'
               }`}
             >
               {plan.popular && (
                 <div className="absolute -top-5 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
+                  <span className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2 rounded-full text-sm font-semibold
+                    transition-all duration-300 hover:from-blue-500 hover:to-indigo-500 hover:shadow-lg">
                     Most Popular
                   </span>
                 </div>
               )}
               <div className="flex-1">
-                <h3 className="text-2xl font-bold transition-colors duration-300 hover:text-blue-500">{plan.name}</h3>
-                <div className="mt-4 flex items-baseline">
-                  <span className="text-5xl font-bold">{getPrice(plan)}</span>
+                <h3 className="text-2xl font-bold text-white transition-colors duration-300 hover:text-blue-500">{plan.name}</h3>
+                <div className="mt-4 flex items-baseline text-white">
+                  <span className="text-5xl font-bold transition-all duration-300 group-hover:text-blue-400">{getPrice(plan)}</span>
                 </div>
                 {getSavingsText(plan) && (
-                  <p className="mt-2 text-sm text-green-500 font-medium">
+                  <p className="mt-2 text-sm text-green-500 font-medium transition-colors duration-300 hover:text-green-400">
                     {getSavingsText(plan)}
                   </p>
                 )}
                 <ul className="mt-8 space-y-4">
                   {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-center">
-                      <CheckIcon className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
-                      <span className="text-gray-600">{feature}</span>
+                    <li key={feature} className="flex items-center transition-transform duration-200 hover:translate-x-1">
+                      <CheckIcon className="w-5 h-5 text-green-500 mr-3 flex-shrink-0 transition-colors duration-300 hover:text-green-400" />
+                      <span className="text-gray-300 transition-colors duration-300 hover:text-white">{feature}</span>
                     </li>
                   ))}
                 </ul>
@@ -213,13 +214,14 @@ export default function Pricing() {
               <button 
                 onClick={() => handleGetStarted(plan)}
                 disabled={loading}
-                className={`w-full mt-8 transition-all duration-300 transform hover:scale-105 ${
-                  plan.popular 
-                    ? 'btn-primary' 
-                    : plan.name === 'Lifetime'
-                      ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-8 py-4 rounded-xl font-semibold hover:from-purple-700 hover:to-indigo-700'
-                      : 'bg-gray-800 text-white px-8 py-4 rounded-xl font-semibold hover:bg-gray-700'
-                } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`w-full mt-8 transition-all duration-300 transform hover:scale-105 
+                  ${
+                    plan.popular 
+                      ? 'btn-primary hover:shadow-lg hover:shadow-blue-500/50 hover:bg-blue-500' 
+                      : plan.name === 'Lifetime'
+                        ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-8 py-4 rounded-xl font-semibold hover:shadow-lg hover:shadow-purple-500/50 hover:from-purple-500 hover:to-indigo-500'
+                        : 'bg-gray-800 text-white px-8 py-4 rounded-xl font-semibold hover:bg-gray-700 hover:shadow-lg hover:shadow-gray-500/50'
+                  } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 {loading ? 'Processing...' : plan.cta}
               </button>

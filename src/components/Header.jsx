@@ -90,23 +90,23 @@ export default function Header() {
           )}
         </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-2 sm:space-x-4">
           <LanguageSelector />
           {user ? (
             <button
               onClick={handleSignOut}
-              className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition-colors"
+              className="bg-blue-600 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full hover:bg-blue-700 transition-colors text-sm sm:text-base"
             >
               {t('common.signOut')}
             </button>
           ) : (
             <>
-              <Link to="/login" className="text-gray-600 hover:text-blue-600 transition-colors">
+              <Link to="/login" className="text-gray-600 hover:text-blue-600 transition-colors whitespace-nowrap text-sm sm:text-base">
                 {t('common.signIn')}
               </Link>
               <Link
                 to="/signup"
-                className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition-colors"
+                className="bg-blue-600 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full hover:bg-blue-700 transition-colors whitespace-nowrap text-sm sm:text-base"
               >
                 {t('common.signUp')}
               </Link>

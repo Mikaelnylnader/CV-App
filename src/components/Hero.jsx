@@ -35,7 +35,7 @@ export default function Hero() {
                   Land Your Dream Job with
                 </motion.div>
                 <motion.div 
-                  className="text-5xl md:text-7xl font-extrabold text-[#3B82F6] relative"
+                  className="text-5xl md:text-7xl font-extrabold text-white relative"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.2 }}
@@ -45,7 +45,7 @@ export default function Hero() {
                     {titles.map((title, index) => (
                       <motion.span
                         key={index}
-                        className="absolute"
+                        className="absolute text-[#3B82F6]"
                         initial={{ opacity: 0, y: 150 }}
                         animate={
                           titleNumber === index
@@ -58,12 +58,6 @@ export default function Hero() {
                       </motion.span>
                     ))}
                   </div>
-                  <motion.div 
-                    className="absolute bottom-0 left-0 h-1 bg-[#3B82F6] rounded-full"
-                    initial={{ width: "0%" }}
-                    animate={{ width: "100%" }}
-                    transition={{ duration: 0.8, delay: 0.6 }}
-                  />
                 </motion.div>
               </h1>
 
