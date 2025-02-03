@@ -22,12 +22,8 @@ export default function Pricing() {
       },
       features: [
         '3 Resume Customizations',
-        'Basic AI Resume Optimization',
         'PDF Export',
-        'Standard Templates',
-        'Basic Email Support',
-        'Basic Job Tracker (Track up to 5 applications)',
-        'Basic Career Resources'
+        'Basic Email Support'
       ],
       cta: 'Get Started',
       popular: false
