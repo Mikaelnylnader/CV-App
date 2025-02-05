@@ -1,24 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CloudArrowUpIcon, LinkIcon } from '@heroicons/react/24/outline';
-import Sidebar from '../components/dashboard/Sidebar';
-import { supabase } from '../lib/supabaseClient';
+import { resumeService } from '../services/resumeService';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabaseClient';
+import { useSubscription } from '../contexts/SubscriptionContext';
+import UpgradeModal from '../components/UpgradeModal';
 import ResumeList from '../components/dashboard/ResumeList';
 import CoverLetterList from '../components/dashboard/CoverLetterList';
 
 export default function ResumeCoverLetterFromUrl() {
+  const { t } = useTranslation();
   const [file, setFile] = useState(null);
   const [jobUrl, setJobUrl] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [uploadDisabled, setUploadDisabled] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { getRemainingCustomizations } = useSubscription();
+  const [remainingCustomizations, setRemainingCustomizations] = useState(null);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
-  const handleFileChange = (event) => {
+  useEffect(() => {
+    let timer;
+    if (success && uploadDisabled) {
+      timer = setTimeout(() => {
+        setUploadDisabled(false);
+        setSuccess('');
+      }, 10000);
+    }
+    return () => clearTimeout(timer);
+  }, [success, uploadDisabled]);
+
+  useEffect(() => {
+    const checkCustomizations = async () => {
+      const remaining = await getRemainingCustomizations();
+      setRemainingCustomizations(remaining);
+    };
+    checkCustomizations();
+  }, []);
+
+  const handleFileUpload = (event) => {
     const uploadedFile = event.target.files[0];
     if (uploadedFile) {
+      console.log('File selected:', uploadedFile.name, uploadedFile.type, uploadedFile.size);
+      
       const maxSize = 10 * 1024 * 1024; // 10MB
       if (uploadedFile.size > maxSize) {
         setError('File size must be less than 10MB');
@@ -38,9 +67,23 @@ export default function ResumeCoverLetterFromUrl() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const validateJobUrl = (url) => {
+    try {
+      const parsedUrl = new URL(url);
+      return parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:';
+    } catch {
+      return false;
+    }
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     
+    if (remainingCustomizations === 0) {
+      setShowUpgradeModal(true);
+      return;
+    }
+
     if (!user) {
       navigate('/login');
       return;
@@ -51,77 +94,65 @@ export default function ResumeCoverLetterFromUrl() {
       return;
     }
 
+    if (!validateJobUrl(jobUrl)) {
+      setError('Please enter a valid job URL');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setError('');
+    setSuccess('');
+
     try {
-      setError('');
-      setSuccess('');
-      setLoading(true);
-
-      // Validate URL
-      try {
-        new URL(jobUrl);
-      } catch {
-        throw new Error('Please enter a valid URL');
-      }
-
-      // Upload file to Supabase Storage
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Math.random().toString(36).slice(2)}.${fileExt}`;
-      const filePath = `${user.id}/${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('resumes')
-        .upload(filePath, file);
-
-      if (uploadError) throw uploadError;
-
-      // Create database records for both resume and cover letter
-      const { error: resumeDbError } = await supabase
-        .from('resumes')
-        .insert({
-          user_id: user.id,
-          original_file_path: filePath,
-          job_url: jobUrl,
-          status: 'pending',
-          original_filename: file.name
-        });
-
-      if (resumeDbError) throw resumeDbError;
-
-      const { error: coverLetterDbError } = await supabase
-        .from('cover_letters')
-        .insert({
-          user_id: user.id,
-          resume_file_path: filePath,
-          job_url: jobUrl,
-          status: 'pending',
-          original_filename: file.name.replace(/\.(pdf|doc|docx)$/i, '_cover_letter.$1')
-        });
-
-      if (coverLetterDbError) throw coverLetterDbError;
+      console.log('Starting resume and cover letter generation...');
       
-      setSuccess('Your resume and cover letter are being generated. You will be notified when they are ready.');
+      // Test Supabase connection
+      const { data: bucketTest, error: bucketError } = await supabase
+        .storage
+        .getBucket('resumes');
+      
+      if (bucketError) {
+        console.error('Bucket test error:', bucketError);
+        throw new Error('Unable to access storage. Please try again later.');
+      }
+      
+      console.log('Storage bucket accessible:', bucketTest);
+
+      const { resume } = await resumeService.uploadResume(file, jobUrl);
+      
+      setSuccess('Resume and cover letter generation started! Processing will begin shortly.');
       setFile(null);
       setJobUrl('');
+      setUploadDisabled(true);
+      
+      console.log('Resume uploaded with ID:', resume.id);
+      
     } catch (err) {
-      console.error('Error:', err);
-      setError('Failed to process your request. Please try again.');
+      console.error('Upload error:', err);
+      setError(err.message || 'Failed to generate resume and cover letter. Please try again.');
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
-  return (
-    <div className="flex h-screen bg-gray-50">
-      <Sidebar currentPage="Resume + Cover Letter from URL" />
-      <main className="flex-1 overflow-y-auto md:ml-16 relative">
-        {/* Coming Soon Overlay */}
-        <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] z-50 flex items-center justify-center">
-          <h1 className="text-6xl font-bold text-pink-600 text-center">
-            Coming Soon
-          </h1>
-        </div>
+  // Get the border color class based on file state
+  const getBorderColorClass = () => {
+    if (uploadDisabled) return 'border-gray-200 bg-gray-50';
+    if (file) return 'border-green-500 bg-green-50';
+    return 'border-gray-300 hover:border-blue-500';
+  };
 
-        <div className="py-16 px-4 sm:px-6 lg:px-8">
+  // Get the icon color class based on file state
+  const getIconColorClass = () => {
+    if (uploadDisabled) return 'text-gray-300';
+    if (file) return 'text-green-500';
+    return 'text-gray-400';
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 pt-16">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="py-4 px-4 sm:px-6 lg:px-8">
           {/* Header Section */}
           <div className="bg-gradient-to-r from-pink-600 to-rose-600 text-white p-8 rounded-xl mb-8">
             <h1 className="text-3xl font-bold mb-4">Resume + Cover Letter from URL</h1>
@@ -160,37 +191,49 @@ export default function ResumeCoverLetterFromUrl() {
           {/* Upload Form */}
           <div className="mt-8">
             <div className="bg-white rounded-lg shadow-sm p-6">
+              {remainingCustomizations !== null && remainingCustomizations < 3 && (
+                <div className="mb-4 p-4 bg-yellow-50 text-yellow-800 rounded-md">
+                  <p>You have {remainingCustomizations} customizations remaining on your free plan.</p>
+                </div>
+              )}
+
               {error && (
-                <div className="mb-4 p-4 text-red-700 bg-red-100 rounded-md">
+                <div className="mb-4 p-4 text-red-700 bg-red-100 rounded-md flex items-start">
+                  <svg className="w-5 h-5 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
                   {error}
                 </div>
               )}
               
               {success && (
-                <div className="mb-4 p-4 text-green-700 bg-green-100 rounded-md">
+                <div className="mb-4 p-4 text-green-700 bg-green-100 rounded-md flex items-center">
+                  <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
                   {success}
                 </div>
               )}
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Resume Upload Section */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Upload Resume
                   </label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-pink-500 transition-colors">
+                  <div className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-all duration-300 ${getBorderColorClass()}`}>
                     <input
                       type="file"
                       accept=".pdf,.doc,.docx"
-                      onChange={handleFileChange}
+                      onChange={handleFileUpload}
                       className="hidden"
                       id="resume-upload"
+                      disabled={uploadDisabled}
                     />
                     <label
                       htmlFor="resume-upload"
-                      className="cursor-pointer"
+                      className={`cursor-pointer ${uploadDisabled ? 'cursor-not-allowed' : ''}`}
                     >
-                      <CloudArrowUpIcon className="mx-auto h-12 w-12 text-gray-400" />
+                      <CloudArrowUpIcon className={`mx-auto h-12 w-12 ${getIconColorClass()}`} />
                       <span className="mt-2 block text-sm font-medium text-gray-900">
                         {file ? file.name : 'Click to upload or drag and drop'}
                       </span>
@@ -201,7 +244,6 @@ export default function ResumeCoverLetterFromUrl() {
                   </div>
                 </div>
 
-                {/* URL Input Section */}
                 <div>
                   <label htmlFor="job-url" className="block text-sm font-medium text-gray-700 mb-2">
                     Job Posting URL
@@ -215,49 +257,49 @@ export default function ResumeCoverLetterFromUrl() {
                       id="job-url"
                       value={jobUrl}
                       onChange={(e) => setJobUrl(e.target.value)}
-                      disabled={loading}
-                      className="focus:ring-pink-500 focus:border-pink-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md disabled:bg-gray-50 disabled:text-gray-500"
-                      placeholder="Paste the job posting URL here"
+                      className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      placeholder="https://example.com/job-posting"
+                      disabled={uploadDisabled}
                     />
                   </div>
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={loading || !jobUrl || !file}
-                  className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 ${
-                    (loading || !jobUrl || !file) ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
-                >
-                  {loading ? (
-                    <>
-                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Generating...
-                    </>
-                  ) : (
-                    'Generate Documents'
-                  )}
-                </button>
+                <div>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || uploadDisabled}
+                    className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                      isSubmitting || uploadDisabled
+                        ? 'bg-gray-400 cursor-not-allowed'
+                        : 'bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500'
+                    }`}
+                  >
+                    {isSubmitting ? 'Processing...' : 'Generate Resume and Cover Letter'}
+                  </button>
+                </div>
               </form>
             </div>
           </div>
 
           {/* Recent Documents Section */}
           <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div>
+            <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-6">Recent Resumes</h2>
               <ResumeList />
             </div>
-            <div>
+            <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-6">Recent Cover Letters</h2>
               <CoverLetterList />
             </div>
           </div>
         </div>
       </main>
+
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        feature="Unlimited Resume and Cover Letter Customizations"
+      />
     </div>
   );
 } 

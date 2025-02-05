@@ -1,6 +1,5 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import Sidebar from '../components/dashboard/Sidebar';
 import { 
   AcademicCapIcon, 
   DocumentTextIcon, 
@@ -81,15 +80,14 @@ export default function CareerResources() {
   ];
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      <Sidebar currentPage="Career Resources" />
-      <main className="flex-1 overflow-y-auto md:ml-16">
+    <div className="min-h-screen bg-gray-50 pt-16">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <Helmet>
           <title>Career Resources | AI Resume Pro</title>
           <meta name="description" content="Access valuable career resources and tips to advance your professional journey." />
         </Helmet>
 
-        <div className="py-16 px-4 sm:px-6 lg:px-8"> {/* Increased top padding from py-8 to py-16 */}
+        <div className="py-4 px-4 sm:px-6 lg:px-8">
           {/* Header Section */}
           <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-8 rounded-xl mb-12"> {/* Increased margin-bottom */}
             <h1 className="text-3xl font-bold mb-4">Career Resources</h1>

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabaseClient';
 import { DocumentTextIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
-import Sidebar from '../components/dashboard/Sidebar';
 import { emailService } from '../services/emailService';
 
 export default function CVDashboard() {
@@ -129,10 +128,9 @@ export default function CVDashboard() {
 
   if (loading) {
     return (
-      <div className="flex h-screen bg-gray-50">
-        <Sidebar currentPage="CVs" />
-        <main className="flex-1 overflow-y-auto md:ml-16">
-          <div className="py-16 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-gray-50 pt-16">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="py-4 px-4 sm:px-6 lg:px-8">
             <div className="animate-pulse space-y-4">
               {[1, 2, 3].map(n => (
                 <div key={n} className="bg-white p-6 rounded-lg shadow-sm">
@@ -148,10 +146,9 @@ export default function CVDashboard() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      <Sidebar currentPage="CVs" />
-      <main className="flex-1 overflow-y-auto md:ml-16">
-        <div className="py-16 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 pt-16">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="py-4 px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-2xl font-bold text-gray-900">My CVs</h1>

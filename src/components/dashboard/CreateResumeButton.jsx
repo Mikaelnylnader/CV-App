@@ -8,7 +8,7 @@ export default function CreateResumeButton() {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/dashboard/upload');
+    navigate('/dashboard/resume-from-url');
   };
 
   return (

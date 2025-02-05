@@ -1,0 +1,7 @@
+[33mcommit 20a3e00e071ac3be3ac4d2f950b62251c1dbb7f1[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: Your Name <your.email@example.com>
+Date:   Mon Feb 3 16:29:16 2025 +0800
+
+    Update: Simplified free plan features in pricing section
+
+M	src/components/Pricing.jsx

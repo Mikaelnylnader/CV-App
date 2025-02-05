@@ -23,7 +23,6 @@ import AdminBlog from './pages/AdminBlog';
 import UploadSection from './components/dashboard/UploadSection';
 import ResumeList from './components/dashboard/ResumeList';
 import EditResume from './pages/EditResume';
-import Sidebar from './components/dashboard/Sidebar';
 import CoverLetterPage from './pages/CoverLetterPage';
 import CoverLetterFromCoverLetter from './pages/CoverLetterFromCoverLetter';
 import Settings from './pages/Settings';
@@ -38,6 +37,8 @@ import TermsOfService from './pages/TermsOfService';
 import FAQ from './pages/FAQ';
 import InterviewPrep from './pages/InterviewPrep';
 import InterviewPrepDetail from './pages/InterviewPrepDetail';
+import JobSuggestions from './pages/JobSuggestions';
+import CoverLettersView from './pages/CoverLettersView';
 
 function PublicLayout() {
   return (
@@ -123,6 +124,11 @@ export default function App() {
                       <ResumeFromUrl />
                     </PrivateRoute>
                   } />
+                  <Route path="/dashboard/job-suggestions" element={
+                    <PrivateRoute>
+                      <JobSuggestions />
+                    </PrivateRoute>
+                  } />
                   <Route path="/dashboard/cover-letter" element={
                     <PrivateRoute>
                       <CoverLetterPage />
@@ -145,7 +151,7 @@ export default function App() {
                   } />
                   <Route path="/dashboard/cover-letter-from-url" element={
                     <PrivateRoute>
-                      <CoverLetterPage />
+                      <CoverLetterFromCoverLetter />
                     </PrivateRoute>
                   } />
                   <Route path="/dashboard/upload" element={
@@ -168,6 +174,11 @@ export default function App() {
                       <ResumesView />
                     </PrivateRoute>
                   } />
+                  <Route path="/cover-letters" element={
+                    <PrivateRoute>
+                      <CoverLettersView />
+                    </PrivateRoute>
+                  } />
                   <Route path="/resources" element={
                     <PrivateRoute>
                       <CareerResources />
@@ -176,7 +187,7 @@ export default function App() {
                 </Routes>
               </div>
               {user && <ChatBot />}
-              <Footer />
+              {!user && <Footer />}
             </div>
           </SubscriptionProvider>
         </AuthProvider>

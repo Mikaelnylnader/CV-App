@@ -11,7 +11,6 @@ import {
   UserIcon,
   AcademicCapIcon
 } from '@heroicons/react/24/outline';
-import Sidebar from '../components/dashboard/Sidebar';
 import ResumeList from '../components/dashboard/ResumeList';
 import CoverLetterList from '../components/dashboard/CoverLetterList';
 import { emailService } from '../services/emailService';
@@ -48,7 +47,7 @@ export default function Dashboard() {
             onClick={() => navigate('/login')}
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           >
-            Go to Login
+            {t('common.signIn')}
           </button>
         </div>
       </div>
@@ -60,50 +59,71 @@ export default function Dashboard() {
       title: 'Resume from URL',
       description: 'Generate a tailored resume from a job posting URL',
       icon: DocumentDuplicateIcon,
-      action: () => navigate('/dashboard/upload'),
+      action: () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        navigate('/dashboard/resume-from-url');
+      },
       color: 'blue'
     },
     {
-      title: 'Cover Letter From CV',
+      title: 'Cover Letter from Resume',
       description: 'Generate a tailored cover letter for your job application',
       icon: PencilSquareIcon,
-      action: () => navigate('/dashboard/cover-letter'),
+      action: () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        navigate('/dashboard/cover-letter');
+      },
       color: 'green'
     },
     {
       title: 'Cover Letter from URL',
       description: 'Generate a tailored cover letter from a job posting URL',
       icon: ChartBarIcon,
-      action: () => navigate('/dashboard/cover-letter-from-cover-letter'),
+      action: () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        navigate('/dashboard/cover-letter-from-url');
+      },
       color: 'purple'
-    },
-    {
-      title: 'Career Resources',
-      description: 'Access guides and tips for job searching',
-      icon: BookOpenIcon,
-      action: () => navigate('/resources'),
-      color: 'yellow'
     },
     {
       title: 'Resume + Cover Letter from URL',
       description: 'Generate a tailored resume and cover letter from a job posting URL',
       icon: DocumentDuplicateIcon,
-      action: () => navigate('/dashboard/resume-from-url'),
+      action: () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        navigate('/dashboard/resume-cover-letter-from-url');
+      },
       color: 'pink'
     },
     {
       title: 'Resume to Jobs',
       description: 'Generate a tailored cover letter from a job posting URL',
       icon: PencilSquareIcon,
-      action: () => navigate('/dashboard/cover-letter-from-url'),
+      action: () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        navigate('/dashboard/resume-to-jobs');
+      },
       color: 'indigo'
     },
     {
       title: 'Interview Preparation',
       description: 'Practice for interviews with AI-powered mock interviews',
       icon: AcademicCapIcon,
-      action: () => navigate('/dashboard/interview-prep'),
+      action: () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        navigate('/dashboard/interview-prep');
+      },
       color: 'teal'
+    },
+    {
+      title: 'Career Resources',
+      description: 'Access guides and tips for job searching',
+      icon: BookOpenIcon,
+      action: () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        navigate('/resources');
+      },
+      color: 'yellow'
     }
   ];
 
@@ -121,10 +141,9 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      <Sidebar currentPage="Dashboard" />
-      <main className="flex-1 overflow-y-auto md:ml-16">
-        <div className="py-16 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 pt-16">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="py-4 px-4 sm:px-6 lg:px-8">
           {/* Header Section */}
           <div className="bg-gradient-to-r from-[#000033] to-[#000066] text-white p-8 rounded-xl mb-8">
             <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
@@ -136,7 +155,7 @@ export default function Dashboard() {
           {/* Quick Actions Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
             {/* Resume from URL */}
-            <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer transform" onClick={() => navigate('/dashboard/upload')}>
+            <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer transform hover:bg-gradient-to-br hover:from-white hover:to-blue-50" onClick={() => navigate('/dashboard/resume-from-url')}>
               <div className="flex items-start">
                 <DocumentDuplicateIcon className="h-8 w-8 text-blue-600 group-hover:scale-110 transition-transform duration-200" />
                 <div className="ml-4">
@@ -150,12 +169,12 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Cover Letter From CV */}
-            <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer transform" onClick={() => navigate('/dashboard/cover-letter')}>
+            {/* Cover Letter from Resume */}
+            <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer transform hover:bg-gradient-to-br hover:from-white hover:to-green-50" onClick={() => navigate('/dashboard/cover-letter')}>
               <div className="flex items-start">
                 <PencilSquareIcon className="h-8 w-8 text-green-600 group-hover:scale-110 transition-transform duration-200" />
                 <div className="ml-4">
-                  <h2 className="text-xl font-semibold mb-2 text-gray-900 hover:text-green-600 transition-colors duration-200">Cover Letter From CV</h2>
+                  <h2 className="text-xl font-semibold mb-2 text-gray-900 hover:text-green-600 transition-colors duration-200">Cover Letter from Resume</h2>
                   <p className="text-gray-600 mb-4">Generate a tailored cover letter for your job application</p>
                   <span className="text-green-600 hover:text-green-700 font-medium inline-flex items-center group">
                     Create Now 
@@ -166,7 +185,7 @@ export default function Dashboard() {
             </div>
 
             {/* Cover Letter from URL */}
-            <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer transform" onClick={() => navigate('/dashboard/cover-letter-from-cover-letter')}>
+            <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer transform hover:bg-gradient-to-br hover:from-white hover:to-purple-50" onClick={() => navigate('/dashboard/cover-letter-from-url')}>
               <div className="flex items-start">
                 <ChartBarIcon className="h-8 w-8 text-purple-600 group-hover:scale-110 transition-transform duration-200" />
                 <div className="ml-4">
@@ -180,23 +199,8 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Career Resources */}
-            <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer transform" onClick={() => navigate('/resources')}>
-              <div className="flex items-start">
-                <BookOpenIcon className="h-8 w-8 text-yellow-600 group-hover:scale-110 transition-transform duration-200" />
-                <div className="ml-4">
-                  <h2 className="text-xl font-semibold mb-2 text-gray-900 hover:text-yellow-600 transition-colors duration-200">Career Resources</h2>
-                  <p className="text-gray-600 mb-4">Access guides and tips for job searching</p>
-                  <span className="text-yellow-600 hover:text-yellow-700 font-medium inline-flex items-center group">
-                    Explore 
-                    <span className="transform translate-x-0 group-hover:translate-x-1 transition-transform duration-200">→</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-
             {/* Resume + Cover Letter from URL */}
-            <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer transform" onClick={() => navigate('/dashboard/resume-from-url')}>
+            <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer transform hover:bg-gradient-to-br hover:from-white hover:to-pink-50" onClick={() => navigate('/dashboard/resume-cover-letter-from-url')}>
               <div className="flex items-start">
                 <DocumentDuplicateIcon className="h-8 w-8 text-pink-600 group-hover:scale-110 transition-transform duration-200" />
                 <div className="ml-4">
@@ -211,7 +215,7 @@ export default function Dashboard() {
             </div>
 
             {/* Resume to Jobs */}
-            <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer transform" onClick={() => navigate('/dashboard/cover-letter-from-url')}>
+            <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer transform hover:bg-gradient-to-br hover:from-white hover:to-indigo-50" onClick={() => navigate('/dashboard/resume-to-jobs')}>
               <div className="flex items-start">
                 <PencilSquareIcon className="h-8 w-8 text-indigo-600 group-hover:scale-110 transition-transform duration-200" />
                 <div className="ml-4">
@@ -226,42 +230,29 @@ export default function Dashboard() {
             </div>
 
             {/* Interview Preparation */}
-            <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer transform" onClick={async () => {
-              try {
-                // Create a new interview prep session and navigate to it
-                const { data, error } = await supabase
-                  .from('interview_prep')
-                  .insert([
-                    {
-                      user_id: user.id,
-                      title: 'New Interview Preparation',
-                      status: 'in_progress',
-                      company: '',
-                      position: '',
-                      date: new Date().toISOString(),
-                      questions: [],
-                      answers: [],
-                      feedback: []
-                    }
-                  ])
-                  .select()
-                  .single();
-
-                if (error) throw error;
-                navigate(`/dashboard/interview-prep/${data.id}`);
-              } catch (err) {
-                console.error('Error creating interview prep:', err);
-                // If there's an error, just navigate to the main interview prep page
-                navigate('/dashboard/interview-prep');
-              }
-            }}>
+            <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer transform hover:bg-gradient-to-br hover:from-white hover:to-teal-50" onClick={() => navigate('/dashboard/interview-prep')}>
               <div className="flex items-start">
                 <AcademicCapIcon className="h-8 w-8 text-teal-600 group-hover:scale-110 transition-transform duration-200" />
                 <div className="ml-4">
                   <h2 className="text-xl font-semibold mb-2 text-gray-900 hover:text-teal-600 transition-colors duration-200">Interview Preparation</h2>
                   <p className="text-gray-600 mb-4">Practice for interviews with AI-powered mock interviews</p>
                   <span className="text-teal-600 hover:text-teal-700 font-medium inline-flex items-center group">
-                    Start Practicing 
+                    Start Practice 
+                    <span className="transform translate-x-0 group-hover:translate-x-1 transition-transform duration-200">→</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Career Resources */}
+            <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer transform hover:bg-gradient-to-br hover:from-white hover:to-yellow-50" onClick={() => navigate('/resources')}>
+              <div className="flex items-start">
+                <BookOpenIcon className="h-8 w-8 text-yellow-600 group-hover:scale-110 transition-transform duration-200" />
+                <div className="ml-4">
+                  <h2 className="text-xl font-semibold mb-2 text-gray-900 hover:text-yellow-600 transition-colors duration-200">Career Resources</h2>
+                  <p className="text-gray-600 mb-4">Access guides and tips for job searching</p>
+                  <span className="text-yellow-600 hover:text-yellow-700 font-medium inline-flex items-center group">
+                    Explore 
                     <span className="transform translate-x-0 group-hover:translate-x-1 transition-transform duration-200">→</span>
                   </span>
                 </div>
@@ -312,23 +303,27 @@ export default function Dashboard() {
             {/* Content based on active tab */}
             <div>
               {activeTab === 'all' && (
-                <div className="space-y-8">
-                  <div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <div className="bg-white rounded-lg shadow-sm p-6">
                     <h3 className="text-lg font-medium text-gray-900 mb-4">Recent Resumes</h3>
-                    <div className="grid grid-cols-1 gap-6">
-                      <ResumeList />
-                    </div>
+                    <ResumeList />
                   </div>
-                  <div>
+                  <div className="bg-white rounded-lg shadow-sm p-6">
                     <h3 className="text-lg font-medium text-gray-900 mb-4">Recent Cover Letters</h3>
-                    <div className="grid grid-cols-1 gap-6">
-                      <CoverLetterList />
-                    </div>
+                    <CoverLetterList />
                   </div>
                 </div>
               )}
-              {activeTab === 'resumes' && <ResumeList />}
-              {activeTab === 'coverLetters' && <CoverLetterList />}
+              {activeTab === 'resumes' && (
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <ResumeList />
+                </div>
+              )}
+              {activeTab === 'coverLetters' && (
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <CoverLetterList />
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useSubscription } from '../contexts/SubscriptionContext';
-import Sidebar from '../components/dashboard/Sidebar';
 import { 
   BellIcon, 
   GlobeAltIcon, 
@@ -107,10 +106,9 @@ export default function Settings() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      <Sidebar currentPage="Account Settings" />
-      <main className="flex-1 overflow-y-auto md:ml-16">
-        <div className="py-16 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 pt-16">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="py-4 px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto space-y-8">
             <h1 className="text-3xl font-bold text-gray-900">Account Settings</h1>
             

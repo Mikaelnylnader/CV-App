@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
-import Sidebar from '../components/dashboard/Sidebar';
 import { pdfService } from '../services/pdfService';
 
 export default function EditResume() {
@@ -82,9 +81,8 @@ export default function EditResume() {
 
   if (loading) {
     return (
-      <div className="flex h-screen bg-gray-50">
-        <Sidebar currentPage="My Resumes" />
-        <main className="flex-1 overflow-y-auto md:ml-16 p-8">
+      <div className="min-h-screen bg-gray-50 pt-16">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
             <div className="h-64 bg-gray-200 rounded mb-6"></div>
@@ -95,10 +93,9 @@ export default function EditResume() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      <Sidebar currentPage="My Resumes" />
-      <main className="flex-1 overflow-y-auto md:ml-16 p-8">
-        <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gray-50 pt-16">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="py-4 px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-gray-900">Edit Resume</h1>
             <div className="space-x-4">

@@ -7,14 +7,19 @@ import {
   ChartBarIcon,
   BookOpenIcon,
   UserIcon,
-  Cog6ToothIcon
+  Cog6ToothIcon,
+  DocumentTextIcon,
+  BriefcaseIcon
 } from '@heroicons/react/24/outline';
 
 const navigation = [
   { name: 'Dashboard', icon: HomeIcon, path: '/dashboard' },
-  { name: 'CVs', icon: DocumentDuplicateIcon, path: '/cvs' },
-  { name: 'Resume + Cover Letter from URL', icon: DocumentDuplicateIcon, path: '/dashboard/resume-from-url' },
-  { name: 'Cover Letter From CV', icon: PencilSquareIcon, path: '/dashboard/cover-letter' },
+  { name: 'My Resumes', icon: DocumentDuplicateIcon, path: '/cvs' },
+  { name: 'My Cover Letters', icon: DocumentTextIcon, path: '/cover-letters' },
+  { name: 'My Jobs', icon: BriefcaseIcon, path: '/jobs' },
+  { name: 'Resume from URL', icon: DocumentDuplicateIcon, path: '/dashboard/resume-from-url' },
+  { name: 'Resume + Cover Letter from URL', icon: DocumentDuplicateIcon, path: '/dashboard/resume-cover-letter-from-url' },
+  { name: 'Cover Letter from Resume', icon: PencilSquareIcon, path: '/dashboard/cover-letter' },
   { name: 'Cover Letter from URL', icon: ChartBarIcon, path: '/dashboard/cover-letter-from-cover-letter' },
   { name: 'Career Resources', icon: BookOpenIcon, path: '/resources' },
   { name: 'Account Settings', icon: Cog6ToothIcon, path: '/settings' }

@@ -1,14 +1,12 @@
 import React from 'react';
-import Sidebar from '../components/dashboard/Sidebar';
 import ResumeList from '../components/dashboard/ResumeList';
 import CreateResumeButton from '../components/dashboard/CreateResumeButton';
 
 export default function ResumesView() {
   return (
-    <div className="flex h-screen bg-gray-50">
-      <Sidebar currentPage="My Resumes" />
-      <main className="flex-1 overflow-y-auto md:ml-16">
-        <div className="py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 pt-16">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="py-4 px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-2xl font-bold text-gray-900">My Resumes</h1>
             <CreateResumeButton />

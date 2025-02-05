@@ -14,13 +14,16 @@ export default defineConfig({
     exclude: ['pdfjs-dist']
   },
   server: {
+    host: 'localhost',
+    port: 3000,
+    strictPort: true,
+    open: true,
     headers: {
-      'Cross-Origin-Embedder-Policy': 'credentialless',
-      'Cross-Origin-Opener-Policy': 'same-origin',
-      'Access-Control-Allow-Origin': '*'
-    },
-    port: 5174,
-    strictPort: true
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Authorization',
+      'Cross-Origin-Embedder-Policy': 'require-corp'
+    }
   },
   base: '/',
   define: {
