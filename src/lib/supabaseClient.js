@@ -46,16 +46,22 @@ const options = {
   },
   // Add fetch configuration
   fetch: (url, options = {}) => {
+    const baseHeaders = {
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache',
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'apikey': supabaseAnonKey
+    };
+
+    // Merge headers, allowing options.headers to override baseHeaders
+    const headers = { ...baseHeaders, ...options.headers };
+
     return fetch(url, {
       ...options,
-      headers: {
-        ...options.headers,
-        'Cache-Control': 'no-cache',
-        'Pragma': 'no-cache',
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      mode: 'cors',  // Explicitly set CORS mode
+      headers,
+      mode: 'cors',
+      credentials: 'omit', // Don't send credentials
       signal: AbortSignal.timeout(30000)  // 30 second timeout
     }).then(response => {
       if (!response.ok) {
@@ -63,7 +69,13 @@ const options = {
       }
       return response;
     }).catch(error => {
-      console.error('Fetch error:', error);
+      // Log detailed error information
+      console.error('Fetch error details:', {
+        url,
+        error: error.message,
+        type: error.name,
+        code: error.code
+      });
       throw error;
     });
   }
@@ -72,62 +84,62 @@ const options = {
 // Create client with direct connection
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, options);
 
-// Add connection status check
+// Add connection status check with retry mechanism
 let isConnected = false;
+let connectionAttempts = 0;
+const MAX_CONNECTION_ATTEMPTS = 5;
 
-// Function to check connection status
-const checkConnection = async () => {
+// Function to check connection status with exponential backoff
+const checkConnection = async (attempt = 0) => {
   try {
+    if (attempt >= MAX_CONNECTION_ATTEMPTS) {
+      console.error('Max connection attempts reached');
+      return false;
+    }
+
     const { data, error } = await supabase.auth.getSession();
     if (error) throw error;
+    
+    // Test database connection
+    const { error: dbError } = await supabase
+      .from('subscriptions')
+      .select('count')
+      .limit(1)
+      .single();
+    
+    if (dbError) throw dbError;
+
     isConnected = true;
+    connectionAttempts = 0;
     return true;
   } catch (error) {
+    console.error(`Connection attempt ${attempt + 1} failed:`, error);
     isConnected = false;
-    return false;
+    connectionAttempts++;
+
+    // Exponential backoff
+    const delay = Math.min(1000 * Math.pow(2, attempt), 10000);
+    await new Promise(resolve => setTimeout(resolve, delay));
+    
+    return checkConnection(attempt + 1);
   }
 };
 
 // Initialize Supabase connection with improved error handling
 const initializeSupabase = async (retryCount = 0, maxRetries = 3) => {
   try {
-    // Check if already connected
     if (isConnected) {
       console.log('Already connected to Supabase');
       return true;
     }
 
     console.log('Attempting to connect to Supabase...');
-
-    // Test auth endpoint with increased timeout
-    const authPromise = supabase.auth.getSession();
-    const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Auth timeout')), 30000)
-    );
+    const connected = await checkConnection();
     
-    const { data: authData, error: authError } = await Promise.race([
-      authPromise,
-      timeoutPromise
-    ]);
-
-    if (authError) {
-      throw new Error(`Authentication failed: ${authError.message}`);
+    if (!connected) {
+      throw new Error('Failed to establish connection after multiple attempts');
     }
 
-    console.log('Auth endpoint accessible:', !!authData);
-
-    // Test database connection
-    const { data, error: dbError } = await supabase
-      .from('subscriptions')
-      .select('count')
-      .limit(1)
-      .single();
-
-    if (dbError) {
-      throw new Error(`Database connection failed: ${dbError.message}`);
-    }
-
-    isConnected = true;
     console.log('Supabase initialized successfully');
     return true;
 
