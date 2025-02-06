@@ -93,13 +93,12 @@ export const testConnection = async () => {
     while (!success && attempt < maxRetries) {
       try {
         console.log(`Health check attempt ${attempt + 1}/${maxRetries}`);
-        const response = await fetch('/supabase/rest/v1/', {
+        const response = await fetch('/rest/v1/', {
           headers: {
             'apikey': supabaseAnonKey,
             'Authorization': `Bearer ${supabaseAnonKey}`,
             'Content-Type': 'application/json'
-          },
-          credentials: 'include'
+          }
         });
         
         if (response.ok) {

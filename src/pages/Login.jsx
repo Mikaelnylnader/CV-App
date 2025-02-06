@@ -17,11 +17,29 @@ export default function Login() {
     try {
       setError('');
       setLoading(true);
-      await signIn(email, password);
+      
+      const { data, error } = await signIn(email, password);
+      
+      if (error) {
+        if (error.message.includes('Invalid login credentials')) {
+          setError('Invalid email or password. Please try again.');
+        } else if (error.message.includes('Email not confirmed')) {
+          setError('Please verify your email address before logging in.');
+        } else {
+          setError(error.message || 'Failed to sign in. Please try again.');
+        }
+        return;
+      }
+
+      if (!data?.user) {
+        setError('No user data received. Please try again.');
+        return;
+      }
+
       navigate('/dashboard');
     } catch (err) {
       console.error('Sign in error:', err);
-      setError('Failed to sign in. Please check your credentials.');
+      setError('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
