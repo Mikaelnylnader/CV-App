@@ -32,9 +32,11 @@ const options = {
   global: {
     headers: {
       'apikey': supabaseAnonKey,
-      'Authorization': `Bearer ${supabaseAnonKey}`
+      'Authorization': `Bearer ${supabaseAnonKey}`,
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
     },
-    fetch: (url, options = {}) => {
+    fetch: async (url, options = {}) => {
       // Convert Supabase URLs to use our proxy
       if (url.startsWith(supabaseUrl)) {
         const path = url.replace(supabaseUrl, '');
@@ -50,22 +52,33 @@ const options = {
         ...options.headers,
         'apikey': supabaseAnonKey,
         'Authorization': `Bearer ${supabaseAnonKey}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
       };
 
-      return fetch(url, options).then(response => {
+      try {
+        const response = await fetch(url, options);
         if (!response.ok) {
           console.error('Supabase request failed:', {
             status: response.status,
             statusText: response.statusText,
             url: response.url
           });
+          
+          // Try to parse error response
+          const contentType = response.headers.get('content-type');
+          if (contentType && contentType.includes('application/json')) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Request failed');
+          } else {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
         }
         return response;
-      }).catch(error => {
+      } catch (error) {
         console.error('Fetch error:', error);
         throw error;
-      });
+      }
     }
   }
 };
@@ -164,22 +177,17 @@ export const testConnection = async () => {
     while (!success && attempt < maxRetries) {
       try {
         console.log(`Database check attempt ${attempt + 1}/${maxRetries}`);
-        const response = await fetch('/rest/v1/subscriptions?select=count', {
-          headers: {
-            'apikey': supabaseAnonKey,
-            'Authorization': `Bearer ${supabaseAnonKey}`,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          }
-        });
+        const { data, error } = await supabase
+          .from('subscriptions')
+          .select('count')
+          .maybeSingle();
 
-        if (response.ok) {
-          const data = await response.json();
+        if (!error) {
           results.dbCheck = true;
           success = true;
-          console.log('Database check successful', data);
+          console.log('Database check successful');
         } else {
-          throw new Error(`Database check failed with status ${response.status}`);
+          throw error;
         }
       } catch (error) {
         console.error(`Database check attempt ${attempt + 1} failed:`, error);
