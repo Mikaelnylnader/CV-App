@@ -24,34 +24,38 @@ export default defineConfig({
       '/rest/v1': {
         target: 'https://rlxqnqwxvgxvqbvwjkqr.supabase.co',
         changeOrigin: true,
-        secure: true,
-        ws: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/rest\/v1/, '/rest/v1'),
         configure: (proxy, _options) => {
           proxy.on('error', (err, _req, _res) => {
             console.log('proxy error', err);
           });
           proxy.on('proxyReq', (proxyReq, req, _res) => {
-            console.log('Sending Request to the Target:', req.method, req.url);
+            proxyReq.setHeader('apikey', process.env.VITE_SUPABASE_ANON_KEY);
+            proxyReq.setHeader('Authorization', `Bearer ${process.env.VITE_SUPABASE_ANON_KEY}`);
+            console.log('Sending Request:', req.method, req.url);
           });
           proxy.on('proxyRes', (proxyRes, req, _res) => {
-            console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
+            console.log('Received Response:', proxyRes.statusCode, req.url);
           });
         }
       },
       '/auth/v1': {
         target: 'https://rlxqnqwxvgxvqbvwjkqr.supabase.co',
         changeOrigin: true,
-        secure: true,
-        ws: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/auth\/v1/, '/auth/v1'),
         configure: (proxy, _options) => {
           proxy.on('error', (err, _req, _res) => {
             console.log('proxy error', err);
           });
           proxy.on('proxyReq', (proxyReq, req, _res) => {
-            console.log('Sending Request to the Target:', req.method, req.url);
+            proxyReq.setHeader('apikey', process.env.VITE_SUPABASE_ANON_KEY);
+            proxyReq.setHeader('Authorization', `Bearer ${process.env.VITE_SUPABASE_ANON_KEY}`);
+            console.log('Sending Auth Request:', req.method, req.url);
           });
           proxy.on('proxyRes', (proxyRes, req, _res) => {
-            console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
+            console.log('Received Auth Response:', proxyRes.statusCode, req.url);
           });
         }
       }
@@ -59,11 +63,8 @@ export default defineConfig({
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Authorization, apikey, X-Client-Info',
-      'Access-Control-Allow-Credentials': 'true',
-      'Cross-Origin-Embedder-Policy': 'require-corp',
-      'Cross-Origin-Opener-Policy': 'same-origin',
-      'Cross-Origin-Resource-Policy': 'cross-origin'
+      'Access-Control-Allow-Headers': '*',
+      'Access-Control-Allow-Credentials': 'true'
     }
   },
   preview: {
@@ -73,24 +74,21 @@ export default defineConfig({
       '/rest/v1': {
         target: 'https://rlxqnqwxvgxvqbvwjkqr.supabase.co',
         changeOrigin: true,
-        secure: true,
-        ws: true
+        secure: false,
+        rewrite: (path) => path.replace(/^\/rest\/v1/, '/rest/v1')
       },
       '/auth/v1': {
         target: 'https://rlxqnqwxvgxvqbvwjkqr.supabase.co',
         changeOrigin: true,
-        secure: true,
-        ws: true
+        secure: false,
+        rewrite: (path) => path.replace(/^\/auth\/v1/, '/auth/v1')
       }
     },
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Authorization, apikey, X-Client-Info',
-      'Access-Control-Allow-Credentials': 'true',
-      'Cross-Origin-Embedder-Policy': 'require-corp',
-      'Cross-Origin-Opener-Policy': 'same-origin',
-      'Cross-Origin-Resource-Policy': 'cross-origin'
+      'Access-Control-Allow-Headers': '*',
+      'Access-Control-Allow-Credentials': 'true'
     }
   },
   base: '/',
