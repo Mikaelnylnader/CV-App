@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = 'https://dhwmktvipzlverocznnt.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRod21rdHZpcHpsdmVyb2N6bm50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzYxNjQ1MjAsImV4cCI6MjA1MTc0MDUyMH0.RWgctzI4u0ZZFKh9EzBcn57GeNvEWRTnrfEvZtlXTUc';
 
 // Debug environment variables (safely)
 console.log('Supabase Configuration:', {
@@ -10,24 +10,15 @@ console.log('Supabase Configuration:', {
   keyLength: supabaseAnonKey?.length || 0
 });
 
-// Validate environment variables
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Missing Supabase environment variables:', {
-    url: !!supabaseUrl,
-    key: !!supabaseAnonKey
-  });
-  throw new Error('Missing required Supabase configuration. Check your environment variables.');
-}
-
 // Create Supabase client with production-optimized settings
 const options = {
   auth: {
     autoRefreshToken: true,
     persistSession: true,
-    detectSessionInUrl: true,
-    storage: window.localStorage,
-    storageKey: 'supabase.auth.token',
-    flowType: 'implicit'
+    detectSessionInUrl: true
+  },
+  db: {
+    schema: 'public'
   },
   global: {
     headers: {
@@ -35,50 +26,6 @@ const options = {
       'Authorization': `Bearer ${supabaseAnonKey}`,
       'Content-Type': 'application/json',
       'Accept': 'application/json'
-    },
-    fetch: async (url, options = {}) => {
-      // Convert Supabase URLs to use our proxy
-      if (url.startsWith(supabaseUrl)) {
-        const path = url.replace(supabaseUrl, '');
-        const proxyUrl = path.startsWith('/rest/v1') ? `/rest/v1${path.slice(9)}` :
-                        path.startsWith('/auth/v1') ? `/auth/v1${path.slice(9)}` :
-                        path;
-        console.log('Proxying request:', { original: url, proxy: proxyUrl });
-        url = proxyUrl;
-      }
-
-      // Ensure headers are properly set
-      options.headers = {
-        ...options.headers,
-        'apikey': supabaseAnonKey,
-        'Authorization': `Bearer ${supabaseAnonKey}`,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      };
-
-      try {
-        const response = await fetch(url, options);
-        if (!response.ok) {
-          console.error('Supabase request failed:', {
-            status: response.status,
-            statusText: response.statusText,
-            url: response.url
-          });
-          
-          // Try to parse error response
-          const contentType = response.headers.get('content-type');
-          if (contentType && contentType.includes('application/json')) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Request failed');
-          } else {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-        }
-        return response;
-      } catch (error) {
-        console.error('Fetch error:', error);
-        throw error;
-      }
     }
   }
 };
@@ -97,142 +44,71 @@ export const testConnection = async () => {
     dbCheckError: null
   };
 
-  // Test 1: Health Check with retry
+  // Test 1: Health Check
   try {
-    const maxRetries = 3;
-    let attempt = 0;
-    let success = false;
-
-    while (!success && attempt < maxRetries) {
-      try {
-        console.log(`Health check attempt ${attempt + 1}/${maxRetries}`);
-        const response = await fetch('/rest/v1/', {
-          headers: {
-            'apikey': supabaseAnonKey,
-            'Authorization': `Bearer ${supabaseAnonKey}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        
-        if (response.ok) {
-          results.healthCheck = true;
-          success = true;
-          console.log('Health check successful');
-        } else {
-          throw new Error(`API returned status ${response.status}`);
-        }
-      } catch (error) {
-        console.error(`Health check attempt ${attempt + 1} failed:`, error);
-        attempt++;
-        if (attempt === maxRetries) {
-          results.healthCheckError = error.message;
-        } else {
-          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
-        }
+    const response = await fetch(`${supabaseUrl}/rest/v1/`, {
+      headers: {
+        'apikey': supabaseAnonKey,
+        'Authorization': `Bearer ${supabaseAnonKey}`
       }
+    });
+    
+    if (response.ok) {
+      results.healthCheck = true;
+      console.log('Health check successful');
+    } else {
+      throw new Error(`API returned status ${response.status}`);
     }
   } catch (error) {
     console.error('Health check error:', error);
-    results.healthCheckError = error.message || 'Failed to connect to Supabase API';
+    results.healthCheckError = error.message;
   }
 
-  // Test 2: Auth Check with retry
+  // Test 2: Auth Check
   try {
-    const maxRetries = 3;
-    let attempt = 0;
-    let success = false;
-
-    while (!success && attempt < maxRetries) {
-      try {
-        console.log(`Auth check attempt ${attempt + 1}/${maxRetries}`);
-        const { data, error } = await supabase.auth.getSession();
-        if (!error) {
-          results.authCheck = true;
-          success = true;
-          console.log('Auth check successful');
-        } else {
-          throw error;
-        }
-      } catch (error) {
-        console.error(`Auth check attempt ${attempt + 1} failed:`, error);
-        attempt++;
-        if (attempt === maxRetries) {
-          results.authCheckError = error.message;
-        } else {
-          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
-        }
-      }
+    const { data, error } = await supabase.auth.getSession();
+    if (!error) {
+      results.authCheck = true;
+      console.log('Auth check successful');
+    } else {
+      throw error;
     }
   } catch (error) {
     console.error('Auth check error:', error);
-    results.authCheckError = error.message || 'Failed to check authentication status';
+    results.authCheckError = error.message;
   }
 
-  // Test 3: Database Check with retry
+  // Test 3: Database Check
   try {
-    const maxRetries = 3;
-    let attempt = 0;
-    let success = false;
+    const { data, error } = await supabase
+      .from('subscriptions')
+      .select('count')
+      .maybeSingle();
 
-    while (!success && attempt < maxRetries) {
-      try {
-        console.log(`Database check attempt ${attempt + 1}/${maxRetries}`);
-        const { data, error } = await supabase
-          .from('subscriptions')
-          .select('count')
-          .maybeSingle();
-
-        if (!error) {
-          results.dbCheck = true;
-          success = true;
-          console.log('Database check successful');
-        } else {
-          throw error;
-        }
-      } catch (error) {
-        console.error(`Database check attempt ${attempt + 1} failed:`, error);
-        attempt++;
-        if (attempt === maxRetries) {
-          results.dbCheckError = error.message;
-        } else {
-          await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
-        }
-      }
+    if (!error) {
+      results.dbCheck = true;
+      console.log('Database check successful');
+    } else {
+      throw error;
     }
   } catch (error) {
     console.error('Database check error:', error);
-    results.dbCheckError = error.message || 'Failed to query database';
-  }
-
-  // If health check and auth check pass, consider it a success even if db check fails
-  if (results.healthCheck && results.authCheck) {
-    console.log('Health check and auth check passed, proceeding despite database check result');
-    return results;
+    results.dbCheckError = error.message;
   }
 
   return results;
 };
 
-// Initialize connection with retry mechanism
 export const initializeSupabase = async () => {
   try {
     console.log('Initializing Supabase connection...');
-    
-    // Test the connection
     const testResult = await testConnection();
     console.log('Connection test results:', testResult);
-    
-    // Only require health check and auth check to pass
-    if (!testResult.healthCheck || !testResult.authCheck) {
-      console.error('Critical connection tests failed:', testResult);
+
+    if (!testResult.healthCheck && !testResult.authCheck) {
       throw new Error('Failed to establish critical connections to Supabase');
     }
 
-    if (!testResult.dbCheck) {
-      console.warn('Database check failed but proceeding with authentication-only functionality');
-    }
-
-    // Initialize auth listener
     supabase.auth.onAuthStateChange((event, session) => {
       console.log('Auth state changed:', event, session ? 'Session exists' : 'No session');
     });
