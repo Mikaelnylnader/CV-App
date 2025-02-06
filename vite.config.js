@@ -21,49 +21,57 @@ export default defineConfig({
     strictPort: true,
     open: true,
     proxy: {
-      '/supabase': {
+      '/rest/v1': {
         target: 'https://rlxqnqwxvgxvqbvwjkqr.supabase.co',
         changeOrigin: true,
         secure: true,
-        rewrite: (path) => path.replace(/^\/supabase/, ''),
-        configure: (proxy, options) => {
-          proxy.on('error', (err, req, res) => {
+        rewrite: (path) => path.replace(/^\/rest\/v1/, '/rest/v1'),
+        configure: (proxy, _options) => {
+          proxy.on('error', (err, _req, _res) => {
             console.log('proxy error', err);
           });
-          proxy.on('proxyReq', (proxyReq, req, res) => {
-            console.log('Sending Request to the Target:', req.method, req.url);
+          proxy.on('proxyReq', (proxyReq, req, _res) => {
+            console.log('Sending Request:', req.method, req.url);
           });
-          proxy.on('proxyRes', (proxyRes, req, res) => {
-            console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
+          proxy.on('proxyRes', (proxyRes, req, _res) => {
+            console.log('Received Response:', proxyRes.statusCode, req.url);
           });
         }
+      },
+      '/auth/v1': {
+        target: 'https://rlxqnqwxvgxvqbvwjkqr.supabase.co',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/auth\/v1/, '/auth/v1')
       }
     },
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': '*',
-      'Access-Control-Allow-Credentials': 'true',
-      'Access-Control-Expose-Headers': '*'
+      'Access-Control-Allow-Headers': '*'
     }
   },
   preview: {
     port: 3000,
     strictPort: true,
     proxy: {
-      '/supabase': {
+      '/rest/v1': {
         target: 'https://rlxqnqwxvgxvqbvwjkqr.supabase.co',
         changeOrigin: true,
         secure: true,
-        rewrite: (path) => path.replace(/^\/supabase/, '')
+        rewrite: (path) => path.replace(/^\/rest\/v1/, '/rest/v1')
+      },
+      '/auth/v1': {
+        target: 'https://rlxqnqwxvgxvqbvwjkqr.supabase.co',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/auth\/v1/, '/auth/v1')
       }
     },
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': '*',
-      'Access-Control-Allow-Credentials': 'true',
-      'Access-Control-Expose-Headers': '*'
+      'Access-Control-Allow-Headers': '*'
     }
   },
   base: '/',

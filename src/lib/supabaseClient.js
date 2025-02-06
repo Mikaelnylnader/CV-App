@@ -35,9 +35,12 @@ const options = {
       'Authorization': `Bearer ${supabaseAnonKey}`
     },
     fetch: (url, options = {}) => {
-      // Use proxy for all Supabase requests
+      // Convert Supabase URLs to use our proxy
       if (url.startsWith(supabaseUrl)) {
-        const proxyUrl = url.replace(supabaseUrl, '/supabase');
+        const path = url.replace(supabaseUrl, '');
+        const proxyUrl = path.startsWith('/rest/v1') ? `/rest/v1${path.slice(9)}` :
+                        path.startsWith('/auth/v1') ? `/auth/v1${path.slice(9)}` :
+                        path;
         console.log('Proxying request:', { original: url, proxy: proxyUrl });
         url = proxyUrl;
       }
@@ -50,10 +53,7 @@ const options = {
         'Content-Type': 'application/json'
       };
 
-      return fetch(url, {
-        ...options,
-        credentials: 'include'
-      }).then(response => {
+      return fetch(url, options).then(response => {
         if (!response.ok) {
           console.error('Supabase request failed:', {
             status: response.status,
