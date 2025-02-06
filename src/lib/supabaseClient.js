@@ -46,6 +46,10 @@ const options = {
   },
   // Add fetch configuration
   fetch: (url, options = {}) => {
+    // Convert absolute URLs to relative for proxy
+    const proxyUrl = new URL(url);
+    const relativeUrl = proxyUrl.pathname + proxyUrl.search;
+
     const baseHeaders = {
       'Cache-Control': 'no-cache',
       'Pragma': 'no-cache',
@@ -57,11 +61,11 @@ const options = {
     // Merge headers, allowing options.headers to override baseHeaders
     const headers = { ...baseHeaders, ...options.headers };
 
-    return fetch(url, {
+    return fetch(relativeUrl, {
       ...options,
       headers,
       mode: 'cors',
-      credentials: 'omit', // Don't send credentials
+      credentials: 'same-origin', // Use same-origin for proxy
       signal: AbortSignal.timeout(30000)  // 30 second timeout
     }).then(response => {
       if (!response.ok) {
@@ -71,7 +75,7 @@ const options = {
     }).catch(error => {
       // Log detailed error information
       console.error('Fetch error details:', {
-        url,
+        url: relativeUrl,
         error: error.message,
         type: error.name,
         code: error.code
