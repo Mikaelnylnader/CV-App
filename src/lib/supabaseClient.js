@@ -33,11 +33,39 @@ const options = {
     headers: {
       'apikey': supabaseAnonKey,
       'Authorization': `Bearer ${supabaseAnonKey}`
-    }
-  },
-  realtime: {
-    params: {
-      eventsPerSecond: 10
+    },
+    fetch: (url, options = {}) => {
+      // Use proxy for all Supabase requests
+      if (url.startsWith(supabaseUrl)) {
+        const proxyUrl = url.replace(supabaseUrl, '/supabase');
+        console.log('Proxying request:', { original: url, proxy: proxyUrl });
+        url = proxyUrl;
+      }
+
+      // Ensure headers are properly set
+      options.headers = {
+        ...options.headers,
+        'apikey': supabaseAnonKey,
+        'Authorization': `Bearer ${supabaseAnonKey}`,
+        'Content-Type': 'application/json'
+      };
+
+      return fetch(url, {
+        ...options,
+        credentials: 'include'
+      }).then(response => {
+        if (!response.ok) {
+          console.error('Supabase request failed:', {
+            status: response.status,
+            statusText: response.statusText,
+            url: response.url
+          });
+        }
+        return response;
+      }).catch(error => {
+        console.error('Fetch error:', error);
+        throw error;
+      });
     }
   }
 };
@@ -64,21 +92,25 @@ export const testConnection = async () => {
 
     while (!success && attempt < maxRetries) {
       try {
-        const response = await fetch(`${supabaseUrl}/rest/v1/`, {
+        console.log(`Health check attempt ${attempt + 1}/${maxRetries}`);
+        const response = await fetch('/supabase/rest/v1/', {
           headers: {
             'apikey': supabaseAnonKey,
             'Authorization': `Bearer ${supabaseAnonKey}`,
             'Content-Type': 'application/json'
-          }
+          },
+          credentials: 'include'
         });
         
         if (response.ok) {
           results.healthCheck = true;
           success = true;
+          console.log('Health check successful');
         } else {
           throw new Error(`API returned status ${response.status}`);
         }
       } catch (error) {
+        console.error(`Health check attempt ${attempt + 1} failed:`, error);
         attempt++;
         if (attempt === maxRetries) {
           results.healthCheckError = error.message;
@@ -100,14 +132,17 @@ export const testConnection = async () => {
 
     while (!success && attempt < maxRetries) {
       try {
+        console.log(`Auth check attempt ${attempt + 1}/${maxRetries}`);
         const { data, error } = await supabase.auth.getSession();
         if (!error) {
           results.authCheck = true;
           success = true;
+          console.log('Auth check successful');
         } else {
           throw error;
         }
       } catch (error) {
+        console.error(`Auth check attempt ${attempt + 1} failed:`, error);
         attempt++;
         if (attempt === maxRetries) {
           results.authCheckError = error.message;
@@ -129,6 +164,7 @@ export const testConnection = async () => {
 
     while (!success && attempt < maxRetries) {
       try {
+        console.log(`Database check attempt ${attempt + 1}/${maxRetries}`);
         const { data, error } = await supabase
           .from('subscriptions')
           .select('count')
@@ -137,10 +173,12 @@ export const testConnection = async () => {
         if (!error) {
           results.dbCheck = true;
           success = true;
+          console.log('Database check successful');
         } else {
           throw error;
         }
       } catch (error) {
+        console.error(`Database check attempt ${attempt + 1} failed:`, error);
         attempt++;
         if (attempt === maxRetries) {
           results.dbCheckError = error.message;
@@ -160,8 +198,11 @@ export const testConnection = async () => {
 // Initialize connection with retry mechanism
 export const initializeSupabase = async () => {
   try {
+    console.log('Initializing Supabase connection...');
+    
     // Test the connection
     const testResult = await testConnection();
+    console.log('Connection test results:', testResult);
     
     if (!testResult.healthCheck || !testResult.authCheck || !testResult.dbCheck) {
       console.error('Connection test failed:', testResult);

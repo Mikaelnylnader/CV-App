@@ -20,21 +20,50 @@ export default defineConfig({
     port: 3000,
     strictPort: true,
     open: true,
+    proxy: {
+      '/supabase': {
+        target: 'https://rlxqnqwxvgxvqbvwjkqr.supabase.co',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/supabase/, ''),
+        configure: (proxy, options) => {
+          proxy.on('error', (err, req, res) => {
+            console.log('proxy error', err);
+          });
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            console.log('Sending Request to the Target:', req.method, req.url);
+          });
+          proxy.on('proxyRes', (proxyRes, req, res) => {
+            console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
+          });
+        }
+      }
+    },
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Authorization, apikey, X-Client-Info',
-      'Access-Control-Allow-Credentials': 'true'
+      'Access-Control-Allow-Headers': '*',
+      'Access-Control-Allow-Credentials': 'true',
+      'Access-Control-Expose-Headers': '*'
     }
   },
   preview: {
     port: 3000,
     strictPort: true,
+    proxy: {
+      '/supabase': {
+        target: 'https://rlxqnqwxvgxvqbvwjkqr.supabase.co',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/supabase/, '')
+      }
+    },
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Authorization, apikey, X-Client-Info',
-      'Access-Control-Allow-Credentials': 'true'
+      'Access-Control-Allow-Headers': '*',
+      'Access-Control-Allow-Credentials': 'true',
+      'Access-Control-Expose-Headers': '*'
     }
   },
   base: '/',
