@@ -7,8 +7,7 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 console.log('Supabase Configuration:', {
   url: supabaseUrl,
   keyExists: !!supabaseAnonKey,
-  keyLength: supabaseAnonKey?.length || 0,
-  keyPrefix: supabaseAnonKey?.substring(0, 10) + '...'
+  keyLength: supabaseAnonKey?.length || 0
 });
 
 // Validate environment variables
@@ -32,8 +31,10 @@ const options = {
   },
   global: {
     headers: {
-      'x-application-name': 'ai-resume-pro',
-      'X-Client-Info': 'supabase-js-web'
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache',
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
     }
   },
   db: {
@@ -50,47 +51,60 @@ const options = {
 const supabase = createClient(supabaseUrl, supabaseAnonKey, options);
 
 // Function to check connection status
-async function checkConnection() {
+async function checkConnection(attempt = 1, maxAttempts = 3) {
   try {
-    console.log('Attempting to connect to Supabase...');
+    console.log(`Connection attempt ${attempt}/${maxAttempts}...`);
     
-    // Test database connection
-    const { data, error } = await supabase
+    // First test auth endpoint
+    const { data: authData, error: authError } = await supabase.auth.getSession();
+    if (authError) {
+      console.error('Auth endpoint test failed:', authError);
+      throw authError;
+    }
+    console.log('Auth endpoint test successful');
+
+    // Then test database connection
+    const { data, error: dbError } = await supabase
       .from('subscriptions')
       .select('count')
       .limit(1);
       
-    if (error) throw error;
+    if (dbError) {
+      console.error('Database connection test failed:', dbError);
+      throw dbError;
+    }
     
     console.log('Successfully connected to Supabase');
     return true;
   } catch (error) {
-    console.error('Connection error:', error);
+    console.error(`Connection attempt ${attempt} failed:`, error);
+
+    if (attempt < maxAttempts) {
+      const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000);
+      console.log(`Retrying in ${delay}ms...`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+      return checkConnection(attempt + 1, maxAttempts);
+    }
+
     return false;
   }
 }
 
-// Initialize connection with retry logic
-async function initializeSupabase(maxRetries = 3, retryDelay = 1000) {
-  let retryCount = 0;
-  
-  while (retryCount < maxRetries) {
+// Initialize connection
+async function initializeSupabase() {
+  try {
     const isConnected = await checkConnection();
     
-    if (isConnected) {
-      console.log('Supabase initialized successfully');
-      return supabase;
+    if (!isConnected) {
+      throw new Error('Failed to establish connection after multiple attempts');
     }
-    
-    retryCount++;
-    if (retryCount < maxRetries) {
-      console.log(`Retrying connection in ${retryDelay}ms (${retryCount}/${maxRetries})...`);
-      await new Promise(resolve => setTimeout(resolve, retryDelay));
-      retryDelay *= 2; // Exponential backoff
-    }
+
+    console.log('Supabase initialized successfully');
+    return supabase;
+  } catch (error) {
+    console.error('Supabase initialization error:', error);
+    throw error;
   }
-  
-  throw new Error('Failed to establish connection after multiple attempts');
 }
 
 // Export initialized client
