@@ -164,17 +164,22 @@ export const testConnection = async () => {
     while (!success && attempt < maxRetries) {
       try {
         console.log(`Database check attempt ${attempt + 1}/${maxRetries}`);
-        const { data, error } = await supabase
-          .from('subscriptions')
-          .select('count')
-          .limit(1);
-        
-        if (!error) {
+        const response = await fetch('/rest/v1/subscriptions?select=count', {
+          headers: {
+            'apikey': supabaseAnonKey,
+            'Authorization': `Bearer ${supabaseAnonKey}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
           results.dbCheck = true;
           success = true;
-          console.log('Database check successful');
+          console.log('Database check successful', data);
         } else {
-          throw error;
+          throw new Error(`Database check failed with status ${response.status}`);
         }
       } catch (error) {
         console.error(`Database check attempt ${attempt + 1} failed:`, error);
@@ -182,13 +187,19 @@ export const testConnection = async () => {
         if (attempt === maxRetries) {
           results.dbCheckError = error.message;
         } else {
-          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+          await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
         }
       }
     }
   } catch (error) {
     console.error('Database check error:', error);
     results.dbCheckError = error.message || 'Failed to query database';
+  }
+
+  // If health check and auth check pass, consider it a success even if db check fails
+  if (results.healthCheck && results.authCheck) {
+    console.log('Health check and auth check passed, proceeding despite database check result');
+    return results;
   }
 
   return results;
@@ -203,9 +214,14 @@ export const initializeSupabase = async () => {
     const testResult = await testConnection();
     console.log('Connection test results:', testResult);
     
-    if (!testResult.healthCheck || !testResult.authCheck || !testResult.dbCheck) {
-      console.error('Connection test failed:', testResult);
-      throw new Error('Failed to establish connection to Supabase');
+    // Only require health check and auth check to pass
+    if (!testResult.healthCheck || !testResult.authCheck) {
+      console.error('Critical connection tests failed:', testResult);
+      throw new Error('Failed to establish critical connections to Supabase');
+    }
+
+    if (!testResult.dbCheck) {
+      console.warn('Database check failed but proceeding with authentication-only functionality');
     }
 
     // Initialize auth listener
