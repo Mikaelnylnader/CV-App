@@ -27,18 +27,13 @@ const options = {
     detectSessionInUrl: true,
     storage: window.localStorage,
     storageKey: 'supabase.auth.token',
-    flowType: 'pkce'
+    flowType: 'implicit'
   },
   global: {
     headers: {
-      'Cache-Control': 'no-cache',
-      'Pragma': 'no-cache',
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      'apikey': supabaseAnonKey,
+      'Authorization': `Bearer ${supabaseAnonKey}`
     }
-  },
-  db: {
-    schema: 'public'
   },
   realtime: {
     params: {
@@ -48,56 +43,135 @@ const options = {
 };
 
 // Create the Supabase client
-const supabase = createClient(supabaseUrl, supabaseAnonKey, options);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, options);
 
-// Function to check connection status
-async function checkConnection(attempt = 1, maxAttempts = 3) {
+// Test connection function with improved error handling
+export const testConnection = async () => {
+  const results = {
+    healthCheck: false,
+    authCheck: false,
+    dbCheck: false,
+    healthCheckError: null,
+    authCheckError: null,
+    dbCheckError: null
+  };
+
+  // Test 1: Health Check with retry
   try {
-    console.log(`Connection attempt ${attempt}/${maxAttempts}...`);
-    
-    // First test auth endpoint
-    const { data: authData, error: authError } = await supabase.auth.getSession();
-    if (authError) {
-      console.error('Auth endpoint test failed:', authError);
-      throw authError;
-    }
-    console.log('Auth endpoint test successful');
+    const maxRetries = 3;
+    let attempt = 0;
+    let success = false;
 
-    // Then test database connection
-    const { data, error: dbError } = await supabase
-      .from('subscriptions')
-      .select('count')
-      .limit(1);
-      
-    if (dbError) {
-      console.error('Database connection test failed:', dbError);
-      throw dbError;
+    while (!success && attempt < maxRetries) {
+      try {
+        const response = await fetch(`${supabaseUrl}/rest/v1/`, {
+          headers: {
+            'apikey': supabaseAnonKey,
+            'Authorization': `Bearer ${supabaseAnonKey}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (response.ok) {
+          results.healthCheck = true;
+          success = true;
+        } else {
+          throw new Error(`API returned status ${response.status}`);
+        }
+      } catch (error) {
+        attempt++;
+        if (attempt === maxRetries) {
+          results.healthCheckError = error.message;
+        } else {
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        }
+      }
     }
-    
-    console.log('Successfully connected to Supabase');
-    return true;
   } catch (error) {
-    console.error(`Connection attempt ${attempt} failed:`, error);
-
-    if (attempt < maxAttempts) {
-      const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000);
-      console.log(`Retrying in ${delay}ms...`);
-      await new Promise(resolve => setTimeout(resolve, delay));
-      return checkConnection(attempt + 1, maxAttempts);
-    }
-
-    return false;
+    console.error('Health check error:', error);
+    results.healthCheckError = error.message || 'Failed to connect to Supabase API';
   }
-}
 
-// Initialize connection
-async function initializeSupabase() {
+  // Test 2: Auth Check with retry
   try {
-    const isConnected = await checkConnection();
-    
-    if (!isConnected) {
-      throw new Error('Failed to establish connection after multiple attempts');
+    const maxRetries = 3;
+    let attempt = 0;
+    let success = false;
+
+    while (!success && attempt < maxRetries) {
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        if (!error) {
+          results.authCheck = true;
+          success = true;
+        } else {
+          throw error;
+        }
+      } catch (error) {
+        attempt++;
+        if (attempt === maxRetries) {
+          results.authCheckError = error.message;
+        } else {
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        }
+      }
     }
+  } catch (error) {
+    console.error('Auth check error:', error);
+    results.authCheckError = error.message || 'Failed to check authentication status';
+  }
+
+  // Test 3: Database Check with retry
+  try {
+    const maxRetries = 3;
+    let attempt = 0;
+    let success = false;
+
+    while (!success && attempt < maxRetries) {
+      try {
+        const { data, error } = await supabase
+          .from('subscriptions')
+          .select('count')
+          .limit(1);
+        
+        if (!error) {
+          results.dbCheck = true;
+          success = true;
+        } else {
+          throw error;
+        }
+      } catch (error) {
+        attempt++;
+        if (attempt === maxRetries) {
+          results.dbCheckError = error.message;
+        } else {
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Database check error:', error);
+    results.dbCheckError = error.message || 'Failed to query database';
+  }
+
+  return results;
+};
+
+// Initialize connection with retry mechanism
+export const initializeSupabase = async () => {
+  try {
+    // Test the connection
+    const testResult = await testConnection();
+    
+    if (!testResult.healthCheck || !testResult.authCheck || !testResult.dbCheck) {
+      console.error('Connection test failed:', testResult);
+      throw new Error('Failed to establish connection to Supabase');
+    }
+
+    // Initialize auth listener
+    supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Auth state changed:', event, session ? 'Session exists' : 'No session');
+    });
 
     console.log('Supabase initialized successfully');
     return supabase;
@@ -105,7 +179,6 @@ async function initializeSupabase() {
     console.error('Supabase initialization error:', error);
     throw error;
   }
-}
+};
 
-// Export initialized client
-export { supabase, initializeSupabase };
+export default supabase;
