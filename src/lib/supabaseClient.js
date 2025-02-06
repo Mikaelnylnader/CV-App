@@ -28,6 +28,7 @@ const options = {
     detectSessionInUrl: true,
     storage: window.localStorage,
     storageKey: 'supabase.auth.token',
+    flowType: 'pkce'
   },
   global: {
     headers: {
@@ -46,17 +47,7 @@ const options = {
 };
 
 // Create client with direct connection
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  ...options,
-  auth: {
-    ...options.auth,
-    flowType: 'pkce',  // Use PKCE flow for better security
-    detectSessionInUrl: true,
-    autoRefreshToken: true,
-    persistSession: true,
-    storage: window.localStorage
-  }
-});
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, options);
 
 // Initialize Supabase connection with improved error handling
 const initializeSupabase = async (retryCount = 0, maxRetries = 3) => {
@@ -64,7 +55,7 @@ const initializeSupabase = async (retryCount = 0, maxRetries = 3) => {
     // Test auth endpoint with timeout
     const authPromise = supabase.auth.getSession();
     const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Auth timeout')), 15000) // Increased timeout
+      setTimeout(() => reject(new Error('Auth timeout')), 15000)
     );
     
     const { data: authData, error: authError } = await Promise.race([
@@ -95,7 +86,7 @@ const initializeSupabase = async (retryCount = 0, maxRetries = 3) => {
     const { error: dbError } = await Promise.race([
       dbPromise,
       new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Database timeout')), 15000) // Increased timeout
+        setTimeout(() => reject(new Error('Database timeout')), 15000)
       )
     ]);
 
