@@ -3,6 +3,11 @@ import { CloudArrowUpIcon, LinkIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import CoverLetterList from '../components/dashboard/CoverLetterList';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = 'https://dhwmktvipzlverocznnt.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRod21rdHZpcHpsdmVyb2N6bm50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzYxNjQ1MjAsImV4cCI6MjA1MTc0MDUyMH0.RWgctzI4u0ZZFKh9EzBcn57GeNvEWRTnrfEvZtlXTUc';
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export default function CoverLetterPage() {
   const [file, setFile] = useState(null);
